@@ -1,0 +1,18 @@
+<resources>
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="android:statusBarColor">@color/color_FF7622</item>
+        <item name="colorPrimary">@color/color_FF7622</item>
+        <item name="colorAccent">@color/color_FF7622</item>
+        <!-- Optionally, set the light/dark status bar icons based on the color -->
+        <item name="android:windowLightStatusBar">true</item> <!-- Light status bar icons -->
+    </style>
+
+    <style name="Theme.MyApp.Splash" parent="Theme.SplashScreen">
+        <item name="android:windowBackground">@drawable/splash_screen</item>
+        <item name="windowSplashScreenBackground">@color/color_white</item>
+        <item name="windowSplashScreenAnimatedIcon">@mipmap/ic_launcher_round</item>
+        <item name="windowSplashScreenIconBackgroundColor">@color/color_white</item>
+        <item name="postSplashScreenTheme">@style/AppTheme</item>
+    </style>
+</resources>

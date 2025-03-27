@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="text_light" parent="Base.TextAppearance.AppCompat">
+        <item name="android:fontFamily">@font/averta_std_cy</item>
+        <item name="android:fontWeight">200</item>
+        <item name="android:includeFontPadding">false</item>
+        <item name="android:fontStyle">normal</item>
+    </style>
+
+    <style name="text_regular" parent="Base.TextAppearance.AppCompat">
+        <item name="android:fontFamily">@font/averta_std_cy</item>
+        <item name="android:fontWeight">400</item>
+        <item name="android:includeFontPadding">false</item>
+        <item name="android:fontStyle">normal</item>
+    </style>
+
+    <style name="text_regular_italic" parent="Base.TextAppearance.AppCompat">
+        <item name="android:fontFamily">@font/averta_std_cy</item>
+        <item name="android:fontWeight">400</item>
+        <item name="android:includeFontPadding">false</item>
+        <item name="android:fontStyle">italic</item>
+    </style>
+
+    <style name="text_semi_bold" parent="Base.TextAppearance.AppCompat">
+        <item name="android:fontFamily">@font/averta_std_cy_bold</item>
+        <item name="android:fontWeight">600</item>
+        <item name="android:includeFontPadding">false</item>
+        <!--        <item name="android:fontStyle">normal</item>-->
+    </style>
+
+    <style name="text_bold" parent="Base.TextAppearance.AppCompat">
+        <item name="android:fontFamily">@font/averta_std_cy</item>
+        <item name="android:fontWeight">700</item>
+        <item name="android:includeFontPadding">false</item>
+        <item name="android:fontStyle">normal</item>
+    </style>
+
+    <style name="text_12" parent="text_regular">
+        <item name="android:textSize">@dimen/text_size_12</item>
+    </style>
+
+    <style name="text_12_semi_bold" parent="text_semi_bold">
+        <item name="android:textSize">@dimen/text_size_12</item>
+    </style>
+
+    <style name="text_14" parent="text_regular">
+        <item name="android:textSize">@dimen/text_size_14</item>
+    </style>
+
+    <style name="text_14_semi_bold" parent="text_semi_bold">
+        <item name="android:textSize">@dimen/text_size_14</item>
+    </style>
+
+    <style name="text_16" parent="text_regular">
+        <item name="android:textSize">@dimen/text_size_16</item>
+    </style>
+
+    <style name="text_16_semi_bold" parent="text_semi_bold">
+        <item name="android:textSize">@dimen/text_size_16</item>
+    </style>
+
+    <style name="text_28" parent="text_regular">
+        <item name="android:textSize">@dimen/text_size_28</item>
+    </style>
+
+    <style name="text_28_semi_bold" parent="text_semi_bold">
+        <item name="android:textSize">@dimen/text_size_28</item>
+    </style>
+
+    <style name="DialogFragmentTheme" parent="Theme.AppCompat.Dialog">
+        <item name="android:windowBackground">@drawable/bg_f3f3f3_tl_tr_corner_16</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="android:windowMinWidthMajor">90%</item>
+        <item name="android:windowMinWidthMinor">90%</item>
+    </style>
+</resources>

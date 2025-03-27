@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="color_white">#FFFFFF</color>
+    <color name="color_black">#000000</color>
+    <color name="color_F3F3F3">#F3F3F3</color>
+    <color name="color_FF7622">#FF7622</color>
+
+    <color name="colorPrimary">#6200EE</color>
+    <color name="colorSecondary">#03DAC5</color>
+    <color name="white">#FFFFFF</color>
+    <color name="colorAccent">#FF4081</color>
+    <color name="colorPrimaryDark">#3700B3</color>
+
+    <color name="color_txtic_primary">#161617</color>
+    <color name="color_txtic_default">#252525</color>
+    <color name="color_txtic_tertiary">#7A7B7B</color>
+    <color name="color_txtic_brand">#E00033</color>
+    <color name="color_txtic_success">#009C57</color>
+    <color name="color_txtic_warning">#E28F00</color>
+    <color name="color_txtic_info">#0068E2</color>
+    <color name="color_txtic_accent">#9F5EE9</color>
+    <color name="color_txtic_disable">#929292</color>
+    <color name="color_txtic_inverse">#FFFFFF</color>
+
+
+    <color name="color_bodder_selected">#6B6B6B</color>
+    <color name="color_bodder_default">#E7E7E7</color>
+    <color name="color_ViettelRed_600">#D61841</color>
+    <color name="color_base_tertiary">#E7E7E7</color>
+
+    <!-- Base Colors -->
+    <color name="brand_viettel_red_600">#D61841</color>
+    <color name="brand_viettel_red_700">#C0153A</color>
+    <color name="gray_100">#F3F3F3</color>
+    <color name="gray_200">#E7E7E7</color>
+    <color name="gray_500">#888888</color>
+    <color name="neutral_100">#F7F8F9</color>
+    <color name="neutral_500">#8592A2</color>
+
+    <color name="gray_d4d4d4">#D4D4D4</color>
+    <!--    ==============-->
+
+    <!-- Text & Icon Colors -->
+    <color name="text_icon_default">#252525</color>
+    <color name="text_icon_secondary">#646982</color>
+    <color name="text_icon_tertiary">#A0A5BA</color>
+    <color name="text_icon_danger">#D61841</color>
+    <color name="text_icon_inverse_default">#FFFFFF</color>
+    <color name="text_icon_disable">#ADADAD</color>
+    <color name="text_icon_warning">#DB7915</color>
+    <color name="text_icon_success">#0D7347</color>
+    <color name="text_icon_brand">#E00033</color>
+    <color name="text_icon_information">#0062D7</color>
+
+    <!-- Base Colors -->
+    <color name="base_color_brand">#FF7622</color>
+<!--    <color name="base_color_brand_viettel_red_700">#C0153A</color>-->
+<!--    <color name="base_color_brand_viettel_red_100">#FDF2F2</color>-->
+    <color name="base_color_white">#FFFFFF</color>
+    <color name="base_color_neutral_100">#F7F8F9</color>
+    <color name="base_color_neutral_500">#8592A2</color>
+    <color name="base_color_gray_100">#F3F3F3</color>
+    <color name="base_color_gray_200">#E7E7E7</color>
+    <color name="base_color_gray_300">#CCCCCC</color>
+    <color name="base_color_gray_500">#888888</color>
+
+    <!-- Background & Surface Colors -->
+    <color name="background_base_default">#FFFFFF</color>
+    <color name="background_primary">#FFFFFF</color>
+    <color name="background_base_secondary">#F3F3F3</color>
+    <color name="background_base_tertiary">#E7E7E7</color>
+    <color name="background_success_default">#0D7347</color>
+    <color name="background_success_secondary">#F2F5F3</color>
+    <color name="background_warning_default">#F58717</color>
+    <color name="background_warning_secondary">#FEF6F2</color>
+    <color name="background_brand_default">#D61841</color>
+    <color name="background_brand_secondary">#FDF2F2</color>
+    <color name="background_brand_secondary_pressed">#FCE4E5</color>
+    <color name="background_information_default">#0062D7</color>
+    <color name="background_information_default_2">#F2F4FE</color>
+
+    <!-- Surface Colors -->
+    <color name="surface_default">#FFFFFF</color>
+    <color name="surface_base">#F3F3F3</color>
+    <color name="surface_light">#FFFFFF</color>
+    <color name="surface_container_highest">#D6D6D6</color>
+
+    <!-- Borders & Dividers -->
+    <color name="border_divider_default">#E7E7E7</color>
+    <color name="border_divider_selected">#6B6B6B</color>
+    <color name="border_divider_error_primary">#C0153A</color>
+    <color name="border_divider_error_secondary">#F8C6C8</color>
+    <color name="border_divider_info">#C6D1F9</color>
+    <color name="border_divider_success">#C6D6CC</color>
+    <color name="border_divider_warning">#FBD7C6</color>
+
+    <!-- Other Colors -->
+    <color name="blanket_default">#000000</color>
+    <color name="content_secondary">#4E4E4E</color>
+    <color name="content_primary">#000000</color>
+    <color name="content_onprimary">#FFFFFF</color>
+    <color name="border_opaque">#FFFFFF</color>
+    <color name="ffffff">#FFFFFF</color>
+</resources>
