@@ -4,15 +4,21 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.module.features.login.ui.LoginFragment">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#121223">
+        android:fillViewport="true">
 
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#121223">
+
+            <!-- Header -->
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/cl_header"
             android:layout_width="match_parent"
-            android:layout_height="300dp"
+            android:layout_height="wrap_content"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
@@ -24,8 +30,10 @@
                 android:scaleType="centerCrop"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.0"
                 app:srcCompat="@drawable/bg_asset" />
 
             <TextView
@@ -45,7 +53,7 @@
                 style="@style/text_16"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="@dimen/dimen_4"
                 android:text="Please sign in to your existing account"
                 android:textColor="@color/color_white"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -53,13 +61,16 @@
                 app:layout_constraintTop_toBottomOf="@id/tv_login_title" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
+            <!-- Form -->
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/cl_form"
             android:layout_width="0dp"
-            android:layout_height="0dp"
+            android:layout_height="wrap_content"
             android:background="@drawable/bg_login"
-            android:padding="@dimen/dimen_30"
-            app:layout_constraintBottom_toBottomOf="parent"
+            android:paddingStart="@dimen/dimen_50"
+            android:paddingTop="@dimen/dimen_10"
+            android:paddingEnd="@dimen/dimen_50"
+            android:paddingBottom="@dimen/dimen_10"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/cl_header">
@@ -84,7 +95,7 @@
                 android:gravity="center_vertical"
                 android:hint="example@gmail.com"
                 android:inputType="text"
-                android:padding="@dimen/dimen_20"
+                android:padding="@dimen/dimen_16"
                 android:textColorHint="#A0A5BA"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -111,7 +122,7 @@
                 android:ems="10"
                 android:hint="Password"
                 android:inputType="textPassword"
-                android:padding="@dimen/dimen_20"
+                android:padding="@dimen/dimen_16"
                 android:textColorHint="#A0A5BA"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -158,7 +169,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:background="@drawable/bg_btn_login"
-                android:padding="@dimen/dimen_20"
+                android:padding="@dimen/dimen_16"
                 android:text="Log In"
                 android:textAllCaps="true"
                 android:textColor="@color/color_white"
@@ -211,6 +222,7 @@
                 android:layout_width="@dimen/dimen_48"
                 android:layout_height="@dimen/dimen_48"
                 android:layout_marginTop="8dp"
+                android:layout_marginBottom="16dp"
                 android:background="@null"
                 android:contentDescription="Google"
                 android:scaleType="centerCrop"
@@ -219,5 +231,6 @@
                 app:layout_constraintTop_toBottomOf="@id/tv_or"
                 app:srcCompat="@drawable/icons8_google" />
         </androidx.constraintlayout.widget.ConstraintLayout>
-    </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
 </layout>

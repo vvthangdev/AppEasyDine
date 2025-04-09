@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/home_nav_graph"
+    app:startDestination="@id/salesFragment">
+
+    <fragment
+        android:id="@+id/salesFragment"
+        android:name="com.module.admin.sale.SalesFragment"
+        android:label="fragment_sales"
+        tools:layout="@layout/fragment_sales" />
+    <fragment
+        android:id="@+id/areaFragment"
+        android:name="com.module.admin.area.AreaFragment"
+        android:label="fragment_area"
+        tools:layout="@layout/fragment_area" />
+    <fragment
+        android:id="@+id/staffFragment"
+        android:name="com.module.admin.staff.StaffFragment"
+        android:label="fragment_staff"
+        tools:layout="@layout/fragment_staff" />
+    <fragment
+        android:id="@+id/notificationFragment"
+        android:name="com.module.admin.notification.NotificationFragment"
+        android:label="fragment_notification"
+        tools:layout="@layout/fragment_notification" />
+</navigation>

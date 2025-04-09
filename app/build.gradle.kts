@@ -78,8 +78,14 @@ dependencies {
     implementation(project(":core:utils"))
     implementation(project(":core:language"))
     implementation(project(":core:navigation"))
+
     implementation(project(":features:login"))
     implementation(project(":features:home"))
+
+    implementation(project(":features_admin:sale"))
+    implementation(project(":features_admin:area"))
+    implementation(project(":features_admin:staff"))
+    implementation(project(":features_admin:notification"))
 
     implementation(libs.core.splash)
 

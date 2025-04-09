@@ -7,15 +7,15 @@ class Login {
     )
 
     data class Response(
-        val id: Int,
+        val id: String,
         val status: String,
         val name: String,
-        val message: String,
+        val message: String? = "",
         val role: String,
-        val address: String,
-        val avatar: String,
+        val address: String? = "",
+        val avatar: String? = "",
         val email: String,
-        val username: String,
+        val username: String? = "",
         val phone: String,
         val accessToken: String,
         val refreshToken: String

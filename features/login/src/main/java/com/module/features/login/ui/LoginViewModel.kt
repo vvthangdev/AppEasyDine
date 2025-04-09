@@ -22,10 +22,10 @@ class LoginViewModel @Inject constructor(
 
     val uiState = MutableLiveData<LoginState>()
 
-    fun login(username: String, password: String) {
+    fun login(email: String, password: String) {
         isLoading.value = true
         viewModelScope.launch(Dispatchers.IO) {
-            repository.login(Login.Request(username, password)).collect { result ->
+            repository.login(Login.Request(email, password)).collect { result ->
                 when (result) {
                     is Result.Loading -> {
                         isLoading.postValue(true)
@@ -34,7 +34,13 @@ class LoginViewModel @Inject constructor(
                     is Result.Success -> {
                         isLoading.postValue(false)
                         saveUserInformation(result.data)
-                        uiState.postValue(LoginState.LoginSuccess)
+                        val role = UserRole.fromString(result.data.role)
+                        when(role) {
+                            UserRole.ADMIN, UserRole.STAFF -> uiState.postValue(LoginState.LoginSuccess(UserRole.STAFF))
+//                            UserRole.STAFF -> uiState.postValue(LoginState.LoginSuccess(UserRole.STAFF))
+                            UserRole.CUSTOMER -> uiState.postValue(LoginState.LoginSuccess(UserRole.CUSTOMER))
+                            null -> uiState.postValue(LoginState.LoginFailed(Exception("Invalid role")))
+                        }
                     }
 
                     is Result.Error -> {
@@ -52,10 +58,10 @@ class LoginViewModel @Inject constructor(
         appPreferences.put(PreferenceKey.USER_ID, result.id)
         appPreferences.put(PreferenceKey.USER_NAME, result.name)
         appPreferences.put(PreferenceKey.USER_EMAIL, result.email)
-        appPreferences.put(PreferenceKey.USER_USERNAME, result.username)
+        appPreferences.put(PreferenceKey.USER_USERNAME, result.username?: "")
         appPreferences.put(PreferenceKey.USER_ROLE, result.role)
-        appPreferences.put(PreferenceKey.USER_ADDRESS, result.address)
-        appPreferences.put(PreferenceKey.USER_AVATAR, result.avatar)
+        appPreferences.put(PreferenceKey.USER_ADDRESS, result.address?: "")
+        appPreferences.put(PreferenceKey.USER_AVATAR, result.avatar ?: "")
         appPreferences.put(PreferenceKey.USER_PHONE, result.phone)
         appPreferences.put(PreferenceKey.ACCESS_TOKEN, result.accessToken)
         appPreferences.put(PreferenceKey.REFRESH_TOKEN, result.refreshToken)
@@ -66,6 +72,22 @@ class LoginViewModel @Inject constructor(
 }
 
 sealed class LoginState {
-    data object LoginSuccess : LoginState()
+    data class LoginSuccess(val role: UserRole) : LoginState()
     data class LoginFailed(val e: Throwable?) : LoginState()
+}
+
+enum class UserRole {
+    ADMIN,
+    STAFF,
+    CUSTOMER;
+
+    companion object {
+        fun fromString(role: String?): UserRole? {
+            return try {
+                role?.uppercase()?.let { valueOf(it) }
+            } catch (e: IllegalArgumentException) {
+                null // Trả về null nếu role không hợp lệ
+            }
+        }
+    }
 }

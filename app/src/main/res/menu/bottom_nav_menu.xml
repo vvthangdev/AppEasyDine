@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/salesFragment"
+        android:icon="@drawable/sell_svgrepo_com"
+        android:title="@string/Sales"/>
+
+    <item
+        android:id="@+id/areaFragment"
+        android:icon="@drawable/dining_table_with_chairs"
+        android:title="@string/Area"/>
+
+    <item
+        android:id="@+id/staffFragment"
+        android:icon="@drawable/chef_restaurant_man_svgrepo_com"
+        android:title="@string/Staff"/>
+
+    <item
+        android:id="@+id/notificationFragment"
+        android:icon="@drawable/notification_12_svgrepo_com"
+        android:title="@string/notifications"/>
+</menu>

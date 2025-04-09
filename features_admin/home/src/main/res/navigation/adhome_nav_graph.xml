@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:startDestination="@id/nav_sales">
+
+<!--    <fragment-->
+<!--        android:id="@+id/nav_sales"-->
+<!--        android:name="com.module.admin.home.SalesFragment"-->
+<!--        android:label="Sales"/>-->
+
+<!--    <fragment-->
+<!--        android:id="@+id/nav_area"-->
+<!--        android:name="com.module.admin.home.AreaFragment"-->
+<!--        android:label="Area"/>-->
+
+<!--    <fragment-->
+<!--        android:id="@+id/nav_staff"-->
+<!--        android:name="com.module.admin.home.RestaurantFragment"-->
+<!--        android:label="Restaurant"/>-->
+
+<!--    <fragment-->
+<!--        android:id="@+id/nav_notifications"-->
+<!--        android:name="com.module.admin.home.NotificationsFragment"-->
+<!--        android:label="Notifications"/>-->
+</navigation>

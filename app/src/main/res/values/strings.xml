@@ -1,0 +1,8 @@
+<resources>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="Sales">Bán hàng</string>
+    <string name="Area">Khu vực</string>
+    <string name="Staff">Nhân viên</string>
+    <string name="notifications">Thông báo</string>
+</resources>

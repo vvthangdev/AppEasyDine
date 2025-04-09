@@ -41,7 +41,9 @@
 
         <activity
             android:name="com.hust.vvthang.easydine.ui.MainActivity"
-            android:exported="true">
+            android:exported="true"
+            android:screenOrientation="landscape"
+            android:configChanges="orientation|screenSize">
 
             <nav-graph android:value="@navigation/app_nav_graph" />
 

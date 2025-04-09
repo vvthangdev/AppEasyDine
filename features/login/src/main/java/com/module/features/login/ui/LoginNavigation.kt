@@ -4,5 +4,6 @@ import android.os.Bundle
 import com.module.core.navigation.BaseNavigator
 
 interface LoginNavigation : BaseNavigator {
-    fun openLoginToHome(bundle: Bundle? = null)
+    fun openLoginToAdminHome(bundle: Bundle? = null)
+    fun openLoginToUserHome(bundle: Bundle? = null)
 }

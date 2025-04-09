@@ -51,11 +51,15 @@ class LoginFragment : BaseFragment<FragmentLoginBinding, LoginViewModel>() {
         mViewModel.uiState.observe(viewLifecycleOwner) { state ->
             when (state) {
                 is LoginState.LoginSuccess -> {
-                    mNavigation.openLoginToHome()
+                    when (state.role) {
+                        UserRole.STAFF -> mNavigation.openLoginToAdminHome()
+                        UserRole.CUSTOMER -> mNavigation.openLoginToUserHome()
+                        else -> {}
+                    }
                 }
 
                 is LoginState.LoginFailed -> {
-                    Toast.makeText(requireContext(), "Login failed", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(), "Login failed123", Toast.LENGTH_SHORT).show()
                 }
             }
         }

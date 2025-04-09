@@ -6,6 +6,11 @@
         <item name="colorAccent">@color/color_FF7622</item>
         <!-- Optionally, set the light/dark status bar icons based on the color -->
         <item name="android:windowLightStatusBar">true</item> <!-- Light status bar icons -->
+
+        <!-- Fullscreen settings -->
+        <item name="android:windowFullscreen">true</item> <!-- Ẩn status bar -->
+        <item name="android:windowContentOverlay">@null</item> <!-- Loại bỏ overlay -->
+        <!-- Optionally, set the light/dark status bar icons based on the color -->
     </style>
 
     <style name="Theme.MyApp.Splash" parent="Theme.SplashScreen">
@@ -16,5 +21,7 @@
         <item name="postSplashScreenTheme">@style/AppTheme</item>
         <item name="android:windowNoTitle">true</item>
         <item name="windowActionBar">false</item>
+        <!-- Fullscreen cho splash nếu muốn -->
+        <item name="android:windowFullscreen">true</item>
     </style>
 </resources>
