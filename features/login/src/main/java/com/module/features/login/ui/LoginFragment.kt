@@ -46,8 +46,8 @@ class LoginFragment : BaseFragment<FragmentLoginBinding, LoginViewModel>() {
         setupPasswordVisibilityToggle()
     }
 
-    override fun observeVideModel() {
-        super.observeVideModel()
+    override fun observeViewModel() {
+        super.observeViewModel()
         mViewModel.uiState.observe(viewLifecycleOwner) { state ->
             when (state) {
                 is LoginState.LoginSuccess -> {

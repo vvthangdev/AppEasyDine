@@ -16,7 +16,6 @@ interface AuthRepository {
     suspend fun login(request: Login.Request): Flow<Result<Login.Response>>
 }
 
-
 class AuthRepositoryImpl @Inject constructor(
     private val authInterface: AuthApiInterface
 ) : AuthRepository {

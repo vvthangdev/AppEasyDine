@@ -6,6 +6,7 @@ import com.module.core.network.interceptor.NetworkInterceptor
 import com.module.core.utils.extensions.constants.Constants
 import com.module.domain.api.BuildConfig
 import com.module.domain.api.interfaces.AuthApiInterface
+import com.module.domain.api.interfaces.SalesApiInterface
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
@@ -62,5 +63,19 @@ class ApiModule {
             .addConverterFactory(GsonConverterFactory.create(gson))
             .build()
         return retrofit.create(AuthApiInterface::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideSalesApiInterface(
+        @AuthHttpClient authClient: OkHttpClient,
+        gson: Gson,
+    ): SalesApiInterface {
+        val retrofit = Retrofit.Builder()
+            .baseUrl(BuildConfig.API_URL)
+            .client(authClient)
+            .addConverterFactory(GsonConverterFactory.create(gson))
+            .build()
+        return retrofit.create(SalesApiInterface::class.java)
     }
 }

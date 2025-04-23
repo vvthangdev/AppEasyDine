@@ -2,6 +2,8 @@ package com.module.domain.api.di
 
 import com.module.domain.api.repository.AuthRepository
 import com.module.domain.api.repository.AuthRepositoryImpl
+import com.module.domain.api.repository.SaleRepository
+import com.module.domain.api.repository.SalesRepositoryImpl
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -13,4 +15,7 @@ abstract class RepositoryModule {
 
     @Binds
     abstract fun provideAuthRepository(repositoryImpl: AuthRepositoryImpl): AuthRepository
+
+    @Binds
+    abstract fun provideSaleRepository(repositoryImpl: SalesRepositoryImpl): SaleRepository
 }

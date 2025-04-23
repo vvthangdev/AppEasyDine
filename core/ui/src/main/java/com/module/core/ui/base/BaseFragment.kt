@@ -50,11 +50,11 @@ abstract class BaseFragment<BD : ViewDataBinding, VM : BaseViewModel> : Fragment
 
             bindingStateView()
 
-            observeVideModel()
+            observeViewModel()
         }
     }
 
-    open fun observeVideModel() {
+    open fun observeViewModel() {
 
     }
 

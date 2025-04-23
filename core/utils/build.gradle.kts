@@ -59,6 +59,7 @@ android {
 dependencies {
     implementation(libs.hilt.android)
     kapt(libs.hilt.complier)
+    implementation (libs.timber.log)
 
     implementation(libs.data.store)
 
