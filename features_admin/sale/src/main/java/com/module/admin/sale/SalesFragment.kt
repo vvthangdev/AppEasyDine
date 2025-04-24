@@ -1,6 +1,7 @@
 package com.module.admin.sale
 
 import androidx.fragment.app.viewModels
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.module.admin.sale.databinding.FragmentSalesBinding
 import com.module.core.ui.base.BaseFragment
@@ -15,18 +16,17 @@ class SalesFragment : BaseFragment<FragmentSalesBinding, SalesViewModel>() {
         get() = R.layout.fragment_sales
 
     private val mViewModel: SalesViewModel by viewModels()
-    override fun getVM(): SalesViewModel {
-        return mViewModel
-    }
+    override fun getVM(): SalesViewModel = mViewModel
 
     private lateinit var categoryAdapter: CategoryAdapter
     private lateinit var itemsAdapter: ItemsAdapter
     private lateinit var selectedItemsAdapter: SelectedItemsAdapter
 
-    override fun initView() {
-        super.initView()
+    override fun onViewCreated(view: android.view.View, savedInstanceState: android.os.Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         Timber.d("initView123")
         setupRecyclerViews()
+        observeViewModel()
     }
 
     private fun setupRecyclerViews() {
@@ -42,11 +42,13 @@ class SalesFragment : BaseFragment<FragmentSalesBinding, SalesViewModel>() {
             mViewModel.addItemToCart(item)
         }
         binding.recyclerViewItems.apply {
-            layoutManager = LinearLayoutManager(context)
+            layoutManager = GridLayoutManager(context, 2)
             adapter = itemsAdapter
         }
 
-        selectedItemsAdapter = SelectedItemsAdapter()
+        selectedItemsAdapter = SelectedItemsAdapter { itemId, quantity ->
+            mViewModel.updateItemQuantity(itemId, quantity)
+        }
         binding.recyclerViewSelectedItems.apply {
             layoutManager = LinearLayoutManager(context)
             adapter = selectedItemsAdapter
@@ -54,19 +56,15 @@ class SalesFragment : BaseFragment<FragmentSalesBinding, SalesViewModel>() {
     }
 
     override fun observeViewModel() {
-        super.observeViewModel()
         mViewModel.categories.observe(viewLifecycleOwner) { categories ->
             categoryAdapter.submitList(categories)
         }
-
         mViewModel.items.observe(viewLifecycleOwner) { items ->
             itemsAdapter.submitList(items)
         }
-
         mViewModel.selectedItems.observe(viewLifecycleOwner) { selectedItems ->
             selectedItemsAdapter.submitList(selectedItems)
         }
-
         mViewModel.totalPrice.observe(viewLifecycleOwner) { total ->
             binding.textTotalPrice.text = "$total đ"
         }

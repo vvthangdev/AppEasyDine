@@ -12,4 +12,7 @@ interface SalesApiInterface {
 
     @GET("item/search-item")
     suspend fun getItemsByCriteria(@QueryMap criteria: Map<String, String>): AdminHome.ItemResponse
+
+    @GET("item")
+    suspend fun getAllItems(): List<AdminHome.Item>
 }

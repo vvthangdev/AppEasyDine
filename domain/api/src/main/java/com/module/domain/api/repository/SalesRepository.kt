@@ -14,6 +14,8 @@ interface SaleRepository {
 
     //    suspend fun getItemsByCriteria(categoryId: String): Flow<Result<List<AdminHome.Item>>>
     suspend fun getItemsByCriteria(criteria: Map<String, String>): Flow<Result<List<AdminHome.Item>>>
+
+    suspend fun getAllItems(): Flow<Result<List<AdminHome.Item>>>
 }
 
 class SalesRepositoryImpl @Inject constructor(
@@ -39,4 +41,14 @@ class SalesRepositoryImpl @Inject constructor(
                 emit(Result.Error(e))
             }
         }
+
+    override suspend fun getAllItems(): Flow<Result<List<AdminHome.Item>>> = flow {
+        emit(Result.Loading())
+        try {
+            val response = salesInterface.getAllItems()
+            emit(Result.Success(response))
+        } catch (e: Exception) {
+            emit(Result.Error(e))
+        }
+    }
 }

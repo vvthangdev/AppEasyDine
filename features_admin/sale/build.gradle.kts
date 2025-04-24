@@ -70,6 +70,7 @@ dependencies {
     implementation (libs.timber.log)
 
     implementation(libs.hilt.android)
+    implementation (libs.github.glide)
     kapt(libs.hilt.complier)
 
     testImplementation(libs.junit)

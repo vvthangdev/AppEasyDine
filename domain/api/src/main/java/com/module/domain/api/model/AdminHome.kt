@@ -24,3 +24,7 @@ class AdminHome {
     data class ItemResponse(val item: List<Item>)
 }
 
+data class CartItem(
+    val item: AdminHome.Item,
+    var quantity: Int // Số lượng món ăn
+)
