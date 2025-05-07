@@ -10,7 +10,6 @@ import com.module.features.login.databinding.FragmentLoginBinding
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
-
 @AndroidEntryPoint
 class LoginFragment : BaseFragment<FragmentLoginBinding, LoginViewModel>() {
 
@@ -52,14 +51,18 @@ class LoginFragment : BaseFragment<FragmentLoginBinding, LoginViewModel>() {
             when (state) {
                 is LoginState.LoginSuccess -> {
                     when (state.role) {
+                        UserRole.ADMIN -> mNavigation.openLoginToAdminHome()
                         UserRole.STAFF -> mNavigation.openLoginToAdminHome()
                         UserRole.CUSTOMER -> mNavigation.openLoginToUserHome()
-                        else -> {}
                     }
                 }
 
                 is LoginState.LoginFailed -> {
-                    Toast.makeText(requireContext(), "Login failed123", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        requireContext(),
+                        state.e?.message ?: "Login failed",
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
             }
         }

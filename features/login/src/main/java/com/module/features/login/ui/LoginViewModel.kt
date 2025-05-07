@@ -23,6 +23,12 @@ class LoginViewModel @Inject constructor(
     val uiState = MutableLiveData<LoginState>()
 
     fun login(email: String, password: String) {
+        // Basic input validation
+        if (email.isBlank() || password.isBlank()) {
+            uiState.postValue(LoginState.LoginFailed(Exception("Email or password cannot be empty")))
+            return
+        }
+
         isLoading.value = true
         viewModelScope.launch(Dispatchers.IO) {
             repository.login(Login.Request(email, password)).collect { result ->
@@ -33,13 +39,18 @@ class LoginViewModel @Inject constructor(
 
                     is Result.Success -> {
                         isLoading.postValue(false)
-                        saveUserInformation(result.data)
-                        val role = UserRole.fromString(result.data.role)
-                        when(role) {
-                            UserRole.ADMIN, UserRole.STAFF -> uiState.postValue(LoginState.LoginSuccess(UserRole.STAFF))
-//                            UserRole.STAFF -> uiState.postValue(LoginState.LoginSuccess(UserRole.STAFF))
-                            UserRole.CUSTOMER -> uiState.postValue(LoginState.LoginSuccess(UserRole.CUSTOMER))
-                            null -> uiState.postValue(LoginState.LoginFailed(Exception("Invalid role")))
+                        val data = result.data
+                        if (data != null) {
+                            saveUserInformation(data)
+                            val role = UserRole.fromString(data.role)
+                            when (role) {
+                                UserRole.ADMIN -> uiState.postValue(LoginState.LoginSuccess(UserRole.ADMIN))
+                                UserRole.STAFF -> uiState.postValue(LoginState.LoginSuccess(UserRole.STAFF))
+                                UserRole.CUSTOMER -> uiState.postValue(LoginState.LoginSuccess(UserRole.CUSTOMER))
+                                null -> uiState.postValue(LoginState.LoginFailed(Exception("Invalid role")))
+                            }
+                        } else {
+                            uiState.postValue(LoginState.LoginFailed(Exception("No user data received")))
                         }
                     }
 
@@ -58,9 +69,9 @@ class LoginViewModel @Inject constructor(
         appPreferences.put(PreferenceKey.USER_ID, result.id)
         appPreferences.put(PreferenceKey.USER_NAME, result.name)
         appPreferences.put(PreferenceKey.USER_EMAIL, result.email)
-        appPreferences.put(PreferenceKey.USER_USERNAME, result.username?: "")
+        appPreferences.put(PreferenceKey.USER_USERNAME, result.username ?: "")
         appPreferences.put(PreferenceKey.USER_ROLE, result.role)
-        appPreferences.put(PreferenceKey.USER_ADDRESS, result.address?: "")
+        appPreferences.put(PreferenceKey.USER_ADDRESS, result.address ?: "")
         appPreferences.put(PreferenceKey.USER_AVATAR, result.avatar ?: "")
         appPreferences.put(PreferenceKey.USER_PHONE, result.phone)
         appPreferences.put(PreferenceKey.ACCESS_TOKEN, result.accessToken)
@@ -68,7 +79,6 @@ class LoginViewModel @Inject constructor(
 
         Log.d("LoginViewModel", "saveUserInformation: ${appPreferences.get(PreferenceKey.USER_NAME, "")}")
     }
-
 }
 
 sealed class LoginState {
@@ -86,7 +96,7 @@ enum class UserRole {
             return try {
                 role?.uppercase()?.let { valueOf(it) }
             } catch (e: IllegalArgumentException) {
-                null // Trả về null nếu role không hợp lệ
+                null
             }
         }
     }

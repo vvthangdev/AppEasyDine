@@ -1,13 +1,33 @@
 package com.module.core.network.model
+//
+//import com.google.gson.annotations.SerializedName
+//
+//data class BaseResponse<T>(
+//    @SerializedName("status") val status: String,
+//    @SerializedName("message") val message: String,
+//    @SerializedName("data") val data: T? = null
+//) {
+//    fun isSuccess(): Boolean = status.equals("SUCCESS", ignoreCase = true)
+//}
 
 import com.google.gson.annotations.SerializedName
-import java.net.HttpURLConnection
+
+enum class ApiStatus {
+    SUCCESS,
+    ERROR
+}
 
 data class BaseResponse<T>(
-    @SerializedName("code") var code: Int,
-    @SerializedName("message") var message: String,
-    @SerializedName("msg") var msg: String,
-    @SerializedName("data") var data: T? = null,
+    @SerializedName("status") private val rawStatus: String,
+    @SerializedName("message") val message: String,
+    @SerializedName("data") val data: T? = null
 ) {
-    fun isSuccess() = code in HttpURLConnection.HTTP_OK..HttpURLConnection.HTTP_ACCEPTED
+    private val status: ApiStatus
+        get() = when (rawStatus.uppercase()) {
+            "SUCCESS" -> ApiStatus.SUCCESS
+            "ERROR" -> ApiStatus.ERROR
+            else -> throw IllegalArgumentException("Invalid status: $rawStatus")
+        }
+
+    fun isSuccess(): Boolean = status == ApiStatus.SUCCESS
 }

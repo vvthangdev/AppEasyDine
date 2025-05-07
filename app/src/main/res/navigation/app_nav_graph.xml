@@ -21,10 +21,14 @@
         tools:layout="@layout/fragment_login">
         <action
             android:id="@+id/action_loginFragment_to_adHomeFragment"
-            app:destination="@id/adHomeFragment" />
+            app:destination="@id/adHomeFragment"
+            app:popUpTo="@id/loginFragment"
+            app:popUpToInclusive="true"/>
         <action
             android:id="@+id/action_loginFragment_to_userHomeFragment"
-            app:destination="@id/userHomeFragment" />
+            app:destination="@id/userHomeFragment"
+            app:popUpTo="@id/loginFragment"
+            app:popUpToInclusive="true"/>
     </fragment>
     <fragment
         android:id="@+id/userHomeFragment"

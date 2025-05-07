@@ -11,6 +11,7 @@
         tools:context=".ui.MainActivity">
 
         <androidx.fragment.app.FragmentContainerView
+            android:paddingTop="@dimen/dimen_30"
             android:id="@+id/nav_host"
             android:name="androidx.navigation.fragment.NavHostFragment"
             android:layout_width="match_parent"

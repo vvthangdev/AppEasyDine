@@ -22,16 +22,19 @@ class AuthRepositoryImpl @Inject constructor(
 
     override suspend fun login(request: Login.Request) = flow {
         try {
-            emit(Result.Loading()) // Phát ra trạng thái Loading
+            emit(Result.Loading) // Phát ra trạng thái Loading
             val response = authInterface.login(request) // Gọi API
-            emit(Result.Success(response)) // Phát ra kết quả thành công
+            if (response.isSuccess()) {
+                emit(Result.Success(response.data)) // Phát ra kết quả thành công
+            } else {
+                emit(Result.Error(Exception(response.message), response.message)) // Lỗi từ API
+            }
         } catch (e: HttpException) {
-            // Xử lý lỗi HTTP (ví dụ: 401, 403, 500, ...)
-            emit(Result.Error(e))
+            // Xử lý lỗi HTTP (401, 403, 500, ...)
+            emit(Result.Error(e, e.message()))
         } catch (e: Exception) {
             // Xử lý các lỗi khác (mạng, parsing, ...)
-            emit(Result.Error(e))
+            emit(Result.Error(e, e.message))
         }
     }.flowOn(Dispatchers.IO)
-
 }

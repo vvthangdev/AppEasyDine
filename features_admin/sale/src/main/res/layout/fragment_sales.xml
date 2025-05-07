@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-        <!-- Binding variables nếu cần -->
+        <!-- Binding variables if needed -->
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -12,48 +12,68 @@
         android:layout_height="match_parent"
         tools:context=".ui.sales.SalesFragment">
 
-        <!-- Danh mục món ăn (bên trái) -->
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerViewCategory"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
+        <!-- Category Spinner (Top) -->
+
+        <!-- Search Bar and Items List Container -->
+        <EditText
+            android:id="@+id/searchBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/search_background"
+            android:hint="Tìm kiếm món ăn"
+            android:padding="8dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/recyclerViewItems"
-            app:layout_constraintWidth_percent="0.2"
-            />
+            app:layout_constraintWidth_percent="0.3" />
 
-        <!-- Danh sách món ăn theo danh mục (ở giữa) -->
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerViewItems"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            app:layout_constraintStart_toEndOf="@id/recyclerViewCategory"
-            app:layout_constraintEnd_toStartOf="@id/layoutCart"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintWidth_percent="0.5"
-           />
+        <Spinner
+            android:id="@+id/spinnerCategory"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="8dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-        <!-- Danh sách món đã chọn + tổng tiền (bên phải) -->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/itemsContainer"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintTop_toBottomOf="@id/spinnerCategory"
+            app:layout_constraintBottom_toTopOf="@id/layoutCart"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <!-- Search Bar (Left) -->
+
+            <!-- Scrollable Items List (Middle) -->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerViewItems"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <!-- Selected Items List + Total (Bottom) -->
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/layoutCart"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            app:layout_constraintTop_toTopOf="parent"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/recyclerViewItems"
-            app:layout_constraintWidth_percent="0.3">
+            app:layout_constraintHeight_percent="0.5">
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recyclerViewSelectedItems"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toTopOf="@+id/totalContainer"
-                />
+                android:layout_marginTop="8dp"
+                app:layout_constraintBottom_toTopOf="@id/totalContainer"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <LinearLayout
                 android:id="@+id/totalContainer"

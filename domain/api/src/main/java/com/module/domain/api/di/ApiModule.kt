@@ -6,8 +6,8 @@ import com.module.core.network.interceptor.NetworkInterceptor
 import com.module.core.utils.extensions.constants.Constants
 import com.module.domain.api.BuildConfig
 import com.module.domain.api.interfaces.AuthApiInterface
-import com.module.domain.api.interfaces.SalesApiInterface
-import dagger.Binds
+import com.module.domain.api.interfaces.ItemApiInterface
+import com.module.domain.api.interfaces.TableApiInterface
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -67,15 +67,29 @@ class ApiModule {
 
     @Provides
     @Singleton
-    fun provideSalesApiInterface(
+    fun provideItemApiInterface(
         @AuthHttpClient authClient: OkHttpClient,
         gson: Gson,
-    ): SalesApiInterface {
+    ): ItemApiInterface {
         val retrofit = Retrofit.Builder()
             .baseUrl(BuildConfig.API_URL)
             .client(authClient)
             .addConverterFactory(GsonConverterFactory.create(gson))
             .build()
-        return retrofit.create(SalesApiInterface::class.java)
+        return retrofit.create(ItemApiInterface::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideTableApiInterface(
+        @AuthHttpClient authClient: OkHttpClient,
+        gson: Gson,
+    ): TableApiInterface {
+        val retrofit = Retrofit.Builder()
+            .baseUrl(BuildConfig.API_URL)
+            .client(authClient)
+            .addConverterFactory(GsonConverterFactory.create(gson))
+            .build()
+        return retrofit.create(TableApiInterface::class.java)
     }
 }
