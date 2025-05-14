@@ -69,6 +69,7 @@ dependencies {
 
     implementation(libs.hilt.android)
     kapt(libs.hilt.complier)
+    implementation(libs.timber.log)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

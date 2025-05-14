@@ -7,6 +7,7 @@ import com.module.core.utils.extensions.constants.Constants
 import com.module.domain.api.BuildConfig
 import com.module.domain.api.interfaces.AuthApiInterface
 import com.module.domain.api.interfaces.ItemApiInterface
+import com.module.domain.api.interfaces.OrderApiInterface
 import com.module.domain.api.interfaces.TableApiInterface
 import dagger.Module
 import dagger.Provides
@@ -29,6 +30,18 @@ class ApiModule {
     fun provideGson(): Gson {
         return GsonBuilder().setLenient().create()
     }
+
+//    @Provides
+//    @Singleton
+//    fun provideSharedPreferences(@ApplicationContext context: Context): SharedPreferences {
+//        return context.getSharedPreferences(PreferenceKey.APP_PREFERENCES, Context.MODE_PRIVATE)
+//    }
+
+//    @Provides
+//    @Singleton
+//    fun provideAppPreferences(@ApplicationContext context: Context): AppPreferences {
+//        return AppPreferencesImpl(context)
+//    }
 
     @Qualifier
     @Retention(AnnotationRetention.RUNTIME)
@@ -91,5 +104,19 @@ class ApiModule {
             .addConverterFactory(GsonConverterFactory.create(gson))
             .build()
         return retrofit.create(TableApiInterface::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideOrderApiInterface(
+        @AuthHttpClient authClient: OkHttpClient,
+        gson: Gson,
+    ): OrderApiInterface {
+        val retrofit = Retrofit.Builder()
+            .baseUrl(BuildConfig.API_URL)
+            .client(authClient)
+            .addConverterFactory(GsonConverterFactory.create(gson))
+            .build()
+        return retrofit.create(OrderApiInterface::class.java)
     }
 }

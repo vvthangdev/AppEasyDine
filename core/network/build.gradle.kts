@@ -65,6 +65,7 @@ dependencies {
 
     implementation(libs.hilt.android)
     kapt(libs.hilt.complier)
+    implementation(libs.timber.log)
 
     api(libs.squareup.retrofit)
     api(libs.squareup.gson)

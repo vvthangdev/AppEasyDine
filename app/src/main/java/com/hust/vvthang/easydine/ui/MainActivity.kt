@@ -8,6 +8,7 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.navigation.fragment.NavHostFragment
 import com.hust.vvthang.easydine.R
 import com.hust.vvthang.easydine.databinding.ActivityMainBinding
+import com.hust.vvthang.easydine.navigation.AdHomeNavigation
 import com.hust.vvthang.easydine.navigation.AppNavigation
 import com.module.core.ui.base.BaseActivity
 import com.module.core.utils.extensions.constants.PreferenceKey
@@ -27,6 +28,9 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>() {
 
     @Inject
     lateinit var appNavigation: AppNavigation
+
+    @Inject
+    lateinit var adHomeNavigation: AdHomeNavigation
 
     @Inject
     lateinit var loginNavigation: LoginNavigation

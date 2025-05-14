@@ -7,15 +7,25 @@ import com.module.core.network.model.Result
 import com.module.core.ui.base.BaseViewModel
 import com.module.domain.api.model.CartItem
 import com.module.domain.api.model.Category
+import com.module.domain.api.model.CreateOrderRequest
 import com.module.domain.api.model.Item
+import com.module.domain.api.model.OrderItemRequest
+import com.module.domain.api.model.OrderResponse
+import com.module.domain.api.model.Size
 import com.module.domain.api.repository.ItemRepository
+import com.module.domain.api.repository.OrderRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import java.time.Instant
+import java.time.ZoneId
+import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 
 @HiltViewModel
 class SalesViewModel @Inject constructor(
+    private val orderRepository: OrderRepository,
     private val itemRepository: ItemRepository
 ) : BaseViewModel() {
     private val _categories = MutableLiveData<List<Category>>()
@@ -24,7 +34,6 @@ class SalesViewModel @Inject constructor(
     private val _items = MutableLiveData<List<Item>>()
     val items: LiveData<List<Item>> = _items
 
-    // Lưu trữ danh sách các item đã chọn trực tiếp trong ViewModel để khắc phục vấn đề timing
     private val cartItems = mutableListOf<CartItem>()
 
     private val _selectedItems = MutableLiveData<List<CartItem>>(emptyList())
@@ -32,6 +41,9 @@ class SalesViewModel @Inject constructor(
 
     private val _totalPrice = MutableLiveData<Long>(0)
     val totalPrice: LiveData<Long> = _totalPrice
+
+    private val _orderResult = MutableLiveData<Result<OrderResponse>>()
+    val orderResult: LiveData<Result<OrderResponse>> = _orderResult
 
     private var allItems: List<Item> = emptyList()
 
@@ -99,74 +111,138 @@ class SalesViewModel @Inject constructor(
         }
     }
 
-    fun addItemToCart(item: Item) {
-        val existingItemIndex = cartItems.indexOfFirst { it.item.id == item.id }
-
-        if (existingItemIndex != -1) {
-            // Update existing item quantity
-            val existingItem = cartItems[existingItemIndex]
-            val newQuantity = existingItem.quantity + 1
-            cartItems[existingItemIndex] = CartItem(existingItem.item, newQuantity)
-            Timber.d("CART UPDATED: Increased quantity for ${item.name} to $newQuantity")
-        } else {
-            // Add new item
-            cartItems.add(CartItem(item, 1))
-            Timber.d("CART UPDATED: Added new item ${item.name} with quantity 1")
+    fun addItemToCart(item: Item, selectedSize: Size? = null) {
+        if (item.sizes.isNotEmpty() && selectedSize == null) {
+            Timber.d("Item ${item.name} has sizes but no size selected. Trigger dialog.")
+            return
         }
 
-        // Update LiveData with a NEW copy of the list
-        _selectedItems.postValue(ArrayList(cartItems))
+        val uniqueKey = "${item.id}_${selectedSize?.id ?: "no_size"}"
+        val existingItemIndex = cartItems.indexOfFirst { it.uniqueKey == uniqueKey }
 
-        // Calculate and update the total price using the updated cartItems list
+        if (existingItemIndex != -1) {
+            val existingItem = cartItems[existingItemIndex]
+            val newQuantity = existingItem.quantity + 1
+            cartItems[existingItemIndex] = CartItem(existingItem.item, newQuantity, selectedSize, existingItem.note)
+            Timber.d("CART UPDATED: Increased quantity for ${item.name} (size: ${selectedSize?.name ?: "default"}) to $newQuantity")
+        } else {
+            cartItems.add(CartItem(item, 1, selectedSize, null))
+            Timber.d("CART UPDATED: Added new item ${item.name} (size: ${selectedSize?.name ?: "default"}) with quantity 1")
+        }
+
+        _selectedItems.postValue(ArrayList(cartItems))
         updateTotalPrice()
     }
 
-    fun updateItemQuantity(itemId: String, quantity: Int) {
-        val index = cartItems.indexOfFirst { it.item.id == itemId }
+    fun updateItemQuantity(uniqueKey: String, quantity: Int) {
+        val index = cartItems.indexOfFirst { it.uniqueKey == uniqueKey }
 
         if (index != -1) {
             val cartItem = cartItems[index]
             val validQuantity = quantity.coerceAtLeast(0)
 
             if (validQuantity > 0) {
-                // Update the quantity
-                cartItems[index] = CartItem(cartItem.item, validQuantity)
-                Timber.d("CART UPDATED: Changed quantity to $validQuantity for ${cartItem.item.name}")
+                cartItems[index] = CartItem(cartItem.item, validQuantity, cartItem.selectedSize, cartItem.note)
+                Timber.d("CART UPDATED: Changed quantity to $validQuantity for ${cartItem.item.name} (size: ${cartItem.selectedSize?.name ?: "default"})")
             } else {
-                // Remove the item
                 cartItems.removeAt(index)
-                Timber.d("CART UPDATED: Removed item ${cartItem.item.name} from cart")
+                Timber.d("CART UPDATED: Removed item ${cartItem.item.name} (size: ${cartItem.selectedSize?.name ?: "default"}) from cart")
             }
 
-            // Update LiveData with a NEW copy of the list
             _selectedItems.postValue(ArrayList(cartItems))
+            updateTotalPrice()
+        }
+    }
 
-            // Calculate and update total price with the updated cartItems
+    fun updateItemDetails(itemId: String, selectedSize: Size?, note: String?, oldUniqueKey: String) {
+        val index = cartItems.indexOfFirst { it.uniqueKey == oldUniqueKey }
+        if (index != -1) {
+            val cartItem = cartItems[index]
+            val newUniqueKey = "${itemId}_${selectedSize?.id ?: "no_size"}"
+            val conflictingIndex = cartItems.indexOfFirst { it.uniqueKey == newUniqueKey && it.uniqueKey != oldUniqueKey }
+
+            if (conflictingIndex != -1) {
+                val conflictingItem = cartItems[conflictingIndex]
+                val newQuantity = conflictingItem.quantity + cartItem.quantity
+                cartItems[conflictingIndex] = CartItem(conflictingItem.item, newQuantity, selectedSize, note ?: conflictingItem.note)
+                cartItems.removeAt(index)
+                Timber.d("Merged item ${cartItem.item.name} (size: ${selectedSize?.name}) into existing item with quantity $newQuantity")
+            } else {
+                cartItems[index] = CartItem(cartItem.item, cartItem.quantity, selectedSize, note)
+                Timber.d("Updated item ${cartItem.item.name}: size=${selectedSize?.name}, note=$note")
+            }
+
+            _selectedItems.postValue(ArrayList(cartItems))
             updateTotalPrice()
         }
     }
 
     fun updateTotalPrice() {
-        // Use the directly maintained cartItems list instead of getting it from LiveData
         Timber.d("Calculating total price from ${cartItems.size} items")
-
-        // Log each item in the cart for debugging
         cartItems.forEach { cartItem ->
-            Timber.d("Item: ${cartItem.item.name}, Quantity: ${cartItem.quantity}, Price: ${cartItem.item.price}")
+            Timber.d("Item: ${cartItem.item.name}, Quantity: ${cartItem.quantity}, Size: ${cartItem.selectedSize?.name}, Price: ${cartItem.selectedSize?.price ?: cartItem.item.price}")
         }
-
-        // Calculate the total price
         val total = if (cartItems.isEmpty()) {
             0L
         } else {
             cartItems.sumOf { cartItem ->
-                val itemTotal = cartItem.item.price * cartItem.quantity
+                val price = cartItem.selectedSize?.price ?: cartItem.item.price
+                val itemTotal = price * cartItem.quantity
                 Timber.d("Item subtotal: ${cartItem.item.name} - $itemTotal")
                 itemTotal
             }
         }
-
         Timber.d("Final total price calculation: $total")
         _totalPrice.postValue(total)
+    }
+
+    fun createOrder(tableId: String) {
+        if (cartItems.isEmpty()) {
+            _orderResult.postValue(Result.Error(Exception("Cart is empty"), "Giỏ hàng trống"))
+            return
+        }
+
+        // Create start_time (current time in Asia/Ho_Chi_Minh)
+        val now = Instant.now()
+        val startTime = ZonedDateTime.ofInstant(now, ZoneId.of("Asia/Ho_Chi_Minh"))
+            .format(DateTimeFormatter.ISO_INSTANT)
+
+        // Create end_time (23:59 of current day in Asia/Ho_Chi_Minh)
+        val endTime = ZonedDateTime.ofInstant(now, ZoneId.of("Asia/Ho_Chi_Minh"))
+            .withHour(23)
+            .withMinute(59)
+            .withSecond(0)
+            .withNano(0)
+            .format(DateTimeFormatter.ISO_INSTANT)
+
+        val orderItems = cartItems.map { cartItem ->
+            OrderItemRequest(
+                id = cartItem.item.id,
+                quantity = cartItem.quantity,
+                size = cartItem.selectedSize?.name,
+                note = cartItem.note ?: ""
+            )
+        }
+
+        val request = CreateOrderRequest(
+            startTime = startTime,
+            endTime = endTime,
+            type = "reservation",
+            status = "pending",
+            tables = listOf(tableId), // Use single tableId
+            items = orderItems
+        )
+
+        viewModelScope.launch {
+            orderRepository.createOrder(request).collect { result ->
+                _orderResult.postValue(result)
+                if (result is Result.Success) {
+                    // Clear cart after successful order creation
+                    cartItems.clear()
+                    _selectedItems.postValue(emptyList())
+                    updateTotalPrice()
+                }
+            }
+        }
     }
 }

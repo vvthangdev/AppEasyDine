@@ -4,6 +4,8 @@ import com.module.domain.api.repository.AuthRepository
 import com.module.domain.api.repository.AuthRepositoryImpl
 import com.module.domain.api.repository.ItemRepository
 import com.module.domain.api.repository.ItemRepositoryImpl
+import com.module.domain.api.repository.OrderRepository
+import com.module.domain.api.repository.OrderRepositoryImpl
 import com.module.domain.api.repository.TableRepository
 import com.module.domain.api.repository.TableRepositoryImpl
 import dagger.Binds
@@ -23,4 +25,7 @@ abstract class RepositoryModule {
 
     @Binds
     abstract fun provideTableRepository(repositoryImpl: TableRepositoryImpl): TableRepository
+
+    @Binds
+    abstract fun provideOrderRepository(repositoryImpl: OrderRepositoryImpl): OrderRepository
 }

@@ -28,7 +28,13 @@ data class Size(
     @SerializedName("price") val price: Long
 )
 
+
 data class CartItem(
     val item: Item,
-    var quantity: Int
-)
+    var quantity: Int,
+    var selectedSize: Size? = null,
+    var note: String? = null
+) {
+    val uniqueKey: String
+        get() = "${item.id}_${selectedSize?.id ?: "no_size"}"
+}

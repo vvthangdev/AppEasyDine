@@ -14,7 +14,11 @@
         android:id="@+id/areaFragment"
         android:name="com.module.admin.area.AreaFragment"
         android:label="fragment_area"
-        tools:layout="@layout/fragment_area" />
+        tools:layout="@layout/fragment_area" >
+        <action
+            android:id="@+id/action_areaFragment_to_salesFragment"
+            app:destination="@id/salesFragment" />
+    </fragment>
     <fragment
         android:id="@+id/staffFragment"
         android:name="com.module.admin.staff.StaffFragment"

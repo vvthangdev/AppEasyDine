@@ -8,14 +8,18 @@ import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.TextView
+import android.widget.Toast
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.module.core.network.model.Result
 import com.module.core.ui.base.BaseFragment
 import com.module.domain.api.model.Category
 import com.module.admin.sale.databinding.FragmentSalesBinding
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
+import java.text.NumberFormat
+import java.util.Locale
 
 @AndroidEntryPoint
 class SalesFragment : BaseFragment<FragmentSalesBinding, SalesViewModel>() {
@@ -28,6 +32,15 @@ class SalesFragment : BaseFragment<FragmentSalesBinding, SalesViewModel>() {
     private lateinit var itemsAdapter: ItemsAdapter
     private lateinit var selectedItemsAdapter: SelectedItemsAdapter
     private lateinit var categoryAdapter: ArrayAdapter<Category>
+    private var tableId: String? = null
+    private var tableNumber: Int? = null
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        tableId = arguments?.getString("tableId")
+        tableNumber = arguments?.getInt("tableNumber")
+        Timber.d("SalesFragment created with tableId: $tableId")
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -37,7 +50,11 @@ class SalesFragment : BaseFragment<FragmentSalesBinding, SalesViewModel>() {
     }
 
     private fun setupViews() {
-        // Setup Category Spinner
+        binding.textSelectedTable?.text = tableId?.let {
+            "Bàn: $it (Số: $tableNumber)"
+        } ?: "Chưa chọn bàn"
+        Timber.d("Set textSelectedTable to: ${binding.textSelectedTable?.text}")
+
         categoryAdapter = object : ArrayAdapter<Category>(
             requireContext(),
             android.R.layout.simple_spinner_item,
@@ -67,7 +84,6 @@ class SalesFragment : BaseFragment<FragmentSalesBinding, SalesViewModel>() {
             override fun onNothingSelected(parent: AdapterView<*>) {}
         }
 
-        // Setup Search Bar
         binding.searchBar.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
@@ -76,22 +92,33 @@ class SalesFragment : BaseFragment<FragmentSalesBinding, SalesViewModel>() {
             }
         })
 
-        // Setup Items RecyclerView
-        itemsAdapter = ItemsAdapter { item ->
-            mViewModel.addItemToCart(item)
+        itemsAdapter = ItemsAdapter { item, selectedSize ->
+            mViewModel.addItemToCart(item, selectedSize)
         }
         binding.recyclerViewItems.apply {
             layoutManager = GridLayoutManager(context, 2)
             adapter = itemsAdapter
         }
 
-        // Setup Selected Items RecyclerView
-        selectedItemsAdapter = SelectedItemsAdapter { itemId, quantity ->
-            mViewModel.updateItemQuantity(itemId, quantity)
-        }
+        selectedItemsAdapter = SelectedItemsAdapter(
+            onQuantityChange = { uniqueKey, quantity ->
+                mViewModel.updateItemQuantity(uniqueKey, quantity)
+            },
+            onItemDetailsChange = { itemId, selectedSize, note, oldUniqueKey ->
+                mViewModel.updateItemDetails(itemId, selectedSize, note, oldUniqueKey)
+            }
+        )
         binding.recyclerViewSelectedItems.apply {
             layoutManager = LinearLayoutManager(context)
             adapter = selectedItemsAdapter
+        }
+
+        binding.buttonCreateOrder?.setOnClickListener {
+            tableId?.let { id ->
+                mViewModel.createOrder(id)
+            } ?: run {
+                Toast.makeText(context, "Chưa chọn bàn", Toast.LENGTH_SHORT).show()
+            }
         }
     }
 
@@ -112,7 +139,24 @@ class SalesFragment : BaseFragment<FragmentSalesBinding, SalesViewModel>() {
 
         mViewModel.totalPrice.observe(viewLifecycleOwner) { total ->
             Timber.d("Updating total price in UI: $total")
-            binding.textTotalPrice.text = "$total đ"
+            binding.textTotalPrice.text = "${NumberFormat.getCurrencyInstance(Locale("vi", "VN")).format(total)}"
+        }
+
+        mViewModel.orderResult.observe(viewLifecycleOwner) { result ->
+            when (result) {
+                is Result.Loading -> {
+                    Timber.d("Creating order...")
+                    Toast.makeText(context, "Đang tạo đơn hàng...", Toast.LENGTH_SHORT).show()
+                }
+                is Result.Success -> {
+                    Timber.d("Order created: ${result.data}")
+                    Toast.makeText(context, "Tạo đơn hàng thành công! ID: ${result.data?.id}", Toast.LENGTH_LONG).show()
+                }
+                is Result.Error -> {
+                    Timber.e(result.exception, "Error creating order: ${result.message}")
+                    Toast.makeText(context, "Lỗi: ${result.message}", Toast.LENGTH_LONG).show()
+                }
+            }
         }
     }
 }

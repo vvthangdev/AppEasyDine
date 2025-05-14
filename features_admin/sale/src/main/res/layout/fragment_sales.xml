@@ -12,9 +12,6 @@
         android:layout_height="match_parent"
         tools:context=".ui.sales.SalesFragment">
 
-        <!-- Category Spinner (Top) -->
-
-        <!-- Search Bar and Items List Container -->
         <EditText
             android:id="@+id/searchBar"
             android:layout_width="wrap_content"
@@ -34,18 +31,25 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
+        <TextView
+            android:id="@+id/textSelectedTable"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Chưa chọn bàn"
+            android:textSize="16sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/searchBar"
+            android:layout_marginTop="8dp" />
+
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/itemsContainer"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            app:layout_constraintTop_toBottomOf="@id/spinnerCategory"
+            app:layout_constraintTop_toBottomOf="@id/textSelectedTable"
             app:layout_constraintBottom_toTopOf="@id/layoutCart"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent">
 
-            <!-- Search Bar (Left) -->
-
-            <!-- Scrollable Items List (Middle) -->
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recyclerViewItems"
                 android:layout_width="0dp"
@@ -57,7 +61,6 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <!-- Selected Items List + Total (Bottom) -->
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/layoutCart"
             android:layout_width="match_parent"
@@ -102,6 +105,14 @@
                     android:text="0 đ"
                     android:textStyle="bold"
                     android:textSize="16sp" />
+
+                <Button
+                    android:id="@+id/buttonCreateOrder"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:text="Tạo đơn hàng"
+                    android:layout_gravity="end" />
             </LinearLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
 

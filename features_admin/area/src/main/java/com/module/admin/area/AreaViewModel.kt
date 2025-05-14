@@ -20,6 +20,14 @@ class AreaViewModel @Inject constructor(
     private val _tableStatuses = MutableLiveData<List<TableStatus>>()
     val tableStatuses: LiveData<List<TableStatus>> = _tableStatuses
 
+    private val _areas = MutableLiveData<List<String>>()
+    val areas: LiveData<List<String>> = _areas
+
+    private val _selectedArea = MutableLiveData<String>()
+    val selectedArea: LiveData<String> = _selectedArea
+
+    private var allTableStatuses: List<TableStatus> = emptyList()
+
     init {
         loadTableStatuses()
     }
@@ -30,12 +38,35 @@ class AreaViewModel @Inject constructor(
                 when (result) {
                     is Result.Loading -> Timber.d("Loading table statuses...")
                     is Result.Success -> {
-                        _tableStatuses.postValue(result.data ?: emptyList())
-                        Timber.d("Loaded ${result.data?.size} table statuses")
+                        allTableStatuses = result.data ?: emptyList()
+                        Timber.d("Loaded ${allTableStatuses.size} table statuses")
+
+                        // Extract unique areas
+                        val uniqueAreas = allTableStatuses.map { it.area }.distinct()
+                        _areas.postValue(uniqueAreas)
+
+                        // Set default selected area (first area or empty)
+                        if (uniqueAreas.isNotEmpty()) {
+                            _selectedArea.postValue(uniqueAreas[0])
+                            filterTablesByArea(uniqueAreas[0])
+                        } else {
+                            _tableStatuses.postValue(emptyList())
+                        }
                     }
                     is Result.Error -> Timber.e(result.exception, "Error loading table statuses: ${result.message}")
                 }
             }
         }
+    }
+
+    fun selectArea(area: String) {
+        _selectedArea.postValue(area)
+        filterTablesByArea(area)
+    }
+
+    private fun filterTablesByArea(area: String) {
+        val filteredTables = allTableStatuses.filter { it.area == area }
+        _tableStatuses.postValue(filteredTables)
+        Timber.d("Filtered ${filteredTables.size} tables for area: $area")
     }
 }
