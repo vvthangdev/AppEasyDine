@@ -9,8 +9,8 @@ import android.widget.TextView
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
 import com.module.admin.area.databinding.FragmentAreaBinding
+import com.module.core.navigation.AdHomeNavigation
 import com.module.core.ui.base.BaseFragment
-import com.module.domain.api.model.TableStatus
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 import javax.inject.Inject
@@ -22,8 +22,11 @@ class AreaFragment : BaseFragment<FragmentAreaBinding, AreaViewModel>() {
     private val mViewModel: AreaViewModel by viewModels()
     override fun getVM(): AreaViewModel = mViewModel
 
+//    @Inject
+//    lateinit var mNavigator: AreaNavigation
+
     @Inject
-    lateinit var mNavigator: AreaNavigation
+    lateinit var mAdHomeNavigation: AdHomeNavigation
 
     private lateinit var tableAdapter: TableAdapter
     private lateinit var areaAdapter: ArrayAdapter<String>
@@ -71,7 +74,7 @@ class AreaFragment : BaseFragment<FragmentAreaBinding, AreaViewModel>() {
                 putInt("tableNumber", tableStatus.tableNumber)
             }
             Timber.d("Navigating to SalesFragment with tableId: ${tableStatus.tableId}")
-            mNavigator.openAreaToSales(bundle)
+            mAdHomeNavigation.openAreaToSales(bundle)
         }
         binding.recyclerViewTables.apply {
             layoutManager = GridLayoutManager(context, 3)

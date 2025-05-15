@@ -1,8 +1,8 @@
 package com.hust.vvthang.easydine.di
 
-import com.hust.vvthang.easydine.navigation.AdHomeNavigation
 import com.hust.vvthang.easydine.navigation.AppNavigation
 import com.module.admin.area.AreaNavigation
+import com.module.core.navigation.AdHomeNavigation
 import com.module.core.navigation.BaseNavigator
 import com.module.features.login.ui.LoginNavigation
 import dagger.Binds
@@ -19,6 +19,10 @@ abstract class ActivityNavigationModule {
     @ActivityScoped
     abstract fun provideBaseNavigator(navigator: AppNavigatorImpl): BaseNavigator
 
+//    @Binds
+//    @ActivityScoped
+//    abstract fun provideHomeNavigator(navigator: AdHomeNavigationImpl): BaseNavigator
+
     @Binds
     @ActivityScoped
     abstract fun provideLoginNavigation(navigator: AppNavigatorImpl): LoginNavigation
@@ -27,11 +31,15 @@ abstract class ActivityNavigationModule {
     @ActivityScoped
     abstract fun provideAppNavigator(navigator: AppNavigatorImpl): AppNavigation
 
-    @Binds
-    @ActivityScoped
-    abstract fun provideAreaNavigation(navigator: AppNavigatorImpl): AreaNavigation
+//    @Binds
+//    @ActivityScoped
+//    abstract fun provideAreaNavigation(navigator: AppNavigatorImpl): AreaNavigation
+
+//    @Binds
+//    @ActivityScoped
+//    abstract fun provideHomeNavigator(navigator: AppNavigatorImpl): AdHomeNavigation
 
     @Binds
     @ActivityScoped
-    abstract fun provideHomeNavigator(navigator: AppNavigatorImpl): AdHomeNavigation
+    abstract fun provideAdHomeNavigation(navigator: AdHomeNavigationImpl): AdHomeNavigation
 }
