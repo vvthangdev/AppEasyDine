@@ -9,6 +9,7 @@ import com.module.domain.api.model.CartItem
 import com.module.domain.api.model.Category
 import com.module.domain.api.model.CreateOrderRequest
 import com.module.domain.api.model.Item
+import com.module.domain.api.model.OrderInfoResponse
 import com.module.domain.api.model.OrderItemRequest
 import com.module.domain.api.model.OrderResponse
 import com.module.domain.api.model.Size
@@ -45,11 +46,43 @@ class SalesViewModel @Inject constructor(
     private val _orderResult = MutableLiveData<Result<OrderResponse>>()
     val orderResult: LiveData<Result<OrderResponse>> = _orderResult
 
+    private val _orderInfoResult = MutableLiveData<Result<OrderInfoResponse>>()
+    val orderInfoResult: LiveData<Result<OrderInfoResponse>> = _orderInfoResult
+
     private var allItems: List<Item> = emptyList()
 
     init {
         loadCategories()
         loadAllItems()
+    }
+
+    fun loadOrderInfo(tableId: String) {
+        viewModelScope.launch {
+            orderRepository.getOrderInfo(tableId).collect { result ->
+                _orderInfoResult.postValue(result)
+                if (result is Result.Success) {
+                    val orderInfo = result.data
+                    cartItems.clear()
+                    orderInfo?.itemOrders?.forEach { itemOrder ->
+                        // Tìm Item tương ứng trong allItems
+                        val item = allItems.find { it.id == itemOrder.itemId }
+                        if (item != null) {
+                            // Tìm Size tương ứng nếu có
+                            val selectedSize = item.sizes.find { it.name == itemOrder.size }
+                            val cartItem = CartItem(
+                                item = item,
+                                quantity = itemOrder.quantity,
+                                selectedSize = selectedSize,
+                                note = itemOrder.note.takeIf { it.isNotBlank() }
+                            )
+                            cartItems.add(cartItem)
+                        }
+                    }
+                    _selectedItems.postValue(ArrayList(cartItems))
+                    updateTotalPrice()
+                }
+            }
+        }
     }
 
     private fun loadCategories() {

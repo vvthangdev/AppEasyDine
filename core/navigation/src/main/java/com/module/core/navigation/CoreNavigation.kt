@@ -2,6 +2,6 @@ package com.module.core.navigation
 
 import android.os.Bundle
 
-interface AdHomeNavigation: BaseNavigator {
+interface CoreNavigation: BaseNavigator {
     fun openAreaToSales(bundle: Bundle? = null)
 }

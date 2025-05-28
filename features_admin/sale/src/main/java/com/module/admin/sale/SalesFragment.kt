@@ -34,11 +34,13 @@ class SalesFragment : BaseFragment<FragmentSalesBinding, SalesViewModel>() {
     private lateinit var categoryAdapter: ArrayAdapter<Category>
     private var tableId: String? = null
     private var tableNumber: Int? = null
+    private var hasOrder: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         tableId = arguments?.getString("tableId")
         tableNumber = arguments?.getInt("tableNumber")
+        hasOrder = arguments?.getBoolean("hasOrder", false) ?: false
         Timber.d("SalesFragment created with tableId: $tableId")
     }
 
@@ -47,6 +49,10 @@ class SalesFragment : BaseFragment<FragmentSalesBinding, SalesViewModel>() {
         Timber.d("Initializing SalesFragment view")
         setupViews()
         observeViewModel()
+
+        if (hasOrder) {
+            tableId?.let { mViewModel.loadOrderInfo(it) }
+        }
     }
 
     private fun setupViews() {
@@ -155,6 +161,23 @@ class SalesFragment : BaseFragment<FragmentSalesBinding, SalesViewModel>() {
                 is Result.Error -> {
                     Timber.e(result.exception, "Error creating order: ${result.message}")
                     Toast.makeText(context, "Lỗi: ${result.message}", Toast.LENGTH_LONG).show()
+                }
+            }
+        }
+
+        mViewModel.orderInfoResult.observe(viewLifecycleOwner) { result ->
+            when (result) {
+                is Result.Loading -> {
+                    Timber.d("Loading order info for tableId: $tableId")
+                    Toast.makeText(context, "Đang tải thông tin đơn hàng...", Toast.LENGTH_SHORT).show()
+                }
+                is Result.Success -> {
+                    Timber.d("Order info loaded: ${result.data}")
+                    Toast.makeText(context, "Tải thông tin đơn hàng thành công!", Toast.LENGTH_SHORT).show()
+                }
+                is Result.Error -> {
+                    Timber.e(result.exception, "Error loading order info: ${result.message}")
+                    Toast.makeText(context, "Lỗi tải thông tin đơn hàng: ${result.message}", Toast.LENGTH_LONG).show()
                 }
             }
         }

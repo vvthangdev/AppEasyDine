@@ -3,7 +3,6 @@ package com.hust.vvthang.easydine.di
 import android.os.Bundle
 import com.hust.vvthang.easydine.R
 import com.hust.vvthang.easydine.navigation.AppNavigation
-import com.module.admin.area.AreaNavigation
 import com.module.core.navigation.BaseNavigatorImpl
 import com.module.features.login.ui.LoginNavigation
 import dagger.hilt.android.scopes.ActivityScoped

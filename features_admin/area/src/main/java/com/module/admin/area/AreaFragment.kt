@@ -9,7 +9,7 @@ import android.widget.TextView
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
 import com.module.admin.area.databinding.FragmentAreaBinding
-import com.module.core.navigation.AdHomeNavigation
+import com.module.core.navigation.CoreNavigation
 import com.module.core.ui.base.BaseFragment
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
@@ -26,14 +26,13 @@ class AreaFragment : BaseFragment<FragmentAreaBinding, AreaViewModel>() {
 //    lateinit var mNavigator: AreaNavigation
 
     @Inject
-    lateinit var mAdHomeNavigation: AdHomeNavigation
+    lateinit var mCoreNavigation: CoreNavigation
 
     private lateinit var tableAdapter: TableAdapter
     private lateinit var areaAdapter: ArrayAdapter<String>
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        Timber.d("Initializing AreaFragment view")
+    override fun initView() {
+        super.initView()
         setupViews()
         observeViewModel()
     }
@@ -72,9 +71,11 @@ class AreaFragment : BaseFragment<FragmentAreaBinding, AreaViewModel>() {
             val bundle = Bundle().apply {
                 putString("tableId", tableStatus.tableId)
                 putInt("tableNumber", tableStatus.tableNumber)
+                // Thêm cờ để biết bàn có đơn hàng hay không
+                putBoolean("hasOrder", tableStatus.status == "Reserved" || tableStatus.status == "Occupied")
             }
-            Timber.d("Navigating to SalesFragment with tableId: ${tableStatus.tableId}")
-            mAdHomeNavigation.openAreaToSales(bundle)
+            Timber.d("Navigating to SalesFragment with tableId: ${tableStatus.tableId}, hasOrder: ${bundle.getBoolean("hasOrder")}")
+            mCoreNavigation.openAreaToSales(bundle)
         }
         binding.recyclerViewTables.apply {
             layoutManager = GridLayoutManager(context, 3)
@@ -101,5 +102,11 @@ class AreaFragment : BaseFragment<FragmentAreaBinding, AreaViewModel>() {
             Timber.d("Updating table statuses in UI: ${tableStatuses.size} tables")
             tableAdapter.submitList(tableStatuses)
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        Timber.d("AreaFragment resumed, refreshing table statuses")
+        mViewModel.loadTableStatuses()
     }
 }

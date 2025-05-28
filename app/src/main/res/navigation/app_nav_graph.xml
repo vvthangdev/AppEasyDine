@@ -36,26 +36,6 @@
         android:label="fragment_main_home"
         tools:layout="@layout/fragment_user_home" />
     <fragment
-        android:id="@+id/salesFragment"
-        android:name="com.module.admin.sale.SalesFragment"
-        android:label="fragment_sales"
-        tools:layout="@layout/fragment_sales" />
-    <fragment
-        android:id="@+id/areaFragment"
-        android:name="com.module.admin.area.AreaFragment"
-        android:label="fragment_area"
-        tools:layout="@layout/fragment_area" />
-    <fragment
-        android:id="@+id/staffFragment"
-        android:name="com.module.admin.staff.StaffFragment"
-        android:label="fragment_staff"
-        tools:layout="@layout/fragment_staff" />
-    <fragment
-        android:id="@+id/notificationFragment"
-        android:name="com.module.admin.notification.NotificationFragment"
-        android:label="fragment_notification"
-        tools:layout="@layout/fragment_notification" />
-    <fragment
         android:id="@+id/adHomeFragment"
         android:name="com.hust.vvthang.easydine.ui.AdHomeFragment"
         android:label="fragment_ad_home"
@@ -64,14 +44,8 @@
             android:id="@+id/action_adHomeFragment_to_salesFragment"
             app:destination="@id/salesFragment" />
         <action
-            android:id="@+id/action_adHomeFragment_to_areaFragment"
-            app:destination="@id/areaFragment" />
-        <action
             android:id="@+id/action_adHomeFragment_to_staffFragment"
             app:destination="@id/staffFragment" />
-        <action
-            android:id="@+id/action_adHomeFragment_to_notificationFragment"
-            app:destination="@id/notificationFragment" />
     </fragment>
 
     <action

@@ -7,7 +7,7 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.hust.vvthang.easydine.R
 import com.hust.vvthang.easydine.databinding.FragmentAdHomeBinding
-import com.module.core.navigation.AdHomeNavigation
+import com.module.core.navigation.CoreNavigation
 import com.module.core.ui.base.BaseFragment
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
@@ -20,7 +20,7 @@ class AdHomeFragment : BaseFragment<FragmentAdHomeBinding, AdHomeViewModel>() {
     override fun getVM(): AdHomeViewModel = viewModel
 
     @Inject
-    lateinit var adHomeNavigation: AdHomeNavigation
+    lateinit var coreNavigation: CoreNavigation
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -32,12 +32,12 @@ class AdHomeFragment : BaseFragment<FragmentAdHomeBinding, AdHomeViewModel>() {
         val navHostFragment = childFragmentManager.findFragmentById(R.id.home_nav_graph) as NavHostFragment
         val navController = navHostFragment.navController
         Timber.d("Binding NavController: $navController")
-        adHomeNavigation.bind(navController)
+        coreNavigation.bind(navController)
         binding.bottomNavigation.setupWithNavController(navController)
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
-        adHomeNavigation.unbind()
+        coreNavigation.unbind()
     }
 }

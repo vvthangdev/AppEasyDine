@@ -5,11 +5,12 @@ import androidx.activity.viewModels
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import com.hust.vvthang.easydine.R
 import com.hust.vvthang.easydine.databinding.ActivityMainBinding
 import com.hust.vvthang.easydine.navigation.AppNavigation
-import com.module.core.navigation.AdHomeNavigation
+import com.module.core.navigation.CoreNavigation
 import com.module.core.ui.base.BaseActivity
 import com.module.core.utils.extensions.constants.PreferenceKey
 import com.module.core.utils.extensions.shared_preferences.AppPreferences
@@ -30,7 +31,7 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>() {
     lateinit var appNavigation: AppNavigation
 
     @Inject
-    lateinit var adHomeNavigation: AdHomeNavigation
+    lateinit var coreNavigation: CoreNavigation
 
     @Inject
     lateinit var loginNavigation: LoginNavigation

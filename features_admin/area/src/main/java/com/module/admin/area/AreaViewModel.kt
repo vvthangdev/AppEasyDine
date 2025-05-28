@@ -32,7 +32,7 @@ class AreaViewModel @Inject constructor(
         loadTableStatuses()
     }
 
-    private fun loadTableStatuses() {
+    fun loadTableStatuses() {
         viewModelScope.launch {
             tableRepository.getAllTableStatuses().collect { result ->
                 when (result) {
