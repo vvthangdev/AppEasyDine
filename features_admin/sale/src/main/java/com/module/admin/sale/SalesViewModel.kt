@@ -11,7 +11,6 @@ import com.module.domain.api.model.CreateOrderRequest
 import com.module.domain.api.model.Item
 import com.module.domain.api.model.OrderInfoResponse
 import com.module.domain.api.model.OrderItemRequest
-import com.module.domain.api.model.OrderResponse
 import com.module.domain.api.model.Size
 import com.module.domain.api.repository.ItemRepository
 import com.module.domain.api.repository.OrderRepository
@@ -23,6 +22,11 @@ import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 import javax.inject.Inject
+
+sealed class OrderResultState {
+    data class ResultState(val result: Result<Unit>) : OrderResultState()
+    object Reset : OrderResultState()
+}
 
 @HiltViewModel
 class SalesViewModel @Inject constructor(
@@ -43,8 +47,8 @@ class SalesViewModel @Inject constructor(
     private val _totalPrice = MutableLiveData<Long>(0)
     val totalPrice: LiveData<Long> = _totalPrice
 
-    private val _orderResult = MutableLiveData<Result<OrderResponse>>()
-    val orderResult: LiveData<Result<OrderResponse>> = _orderResult
+    private val _orderResult = MutableLiveData<OrderResultState>()
+    val orderResult: LiveData<OrderResultState> = _orderResult
 
     private val _orderInfoResult = MutableLiveData<Result<OrderInfoResponse>>()
     val orderInfoResult: LiveData<Result<OrderInfoResponse>> = _orderInfoResult
@@ -56,24 +60,22 @@ class SalesViewModel @Inject constructor(
         loadAllItems()
     }
 
-    fun loadOrderInfo(tableId: String) {
+    fun loadOrderInfo(tableId: String? = null, orderId: String? = null) {
         viewModelScope.launch {
-            orderRepository.getOrderInfo(tableId).collect { result ->
+            orderRepository.getOrderInfo(orderId, tableId).collect { result ->
                 _orderInfoResult.postValue(result)
                 if (result is Result.Success) {
                     val orderInfo = result.data
                     cartItems.clear()
                     orderInfo?.itemOrders?.forEach { itemOrder ->
-                        // Tìm Item tương ứng trong allItems
                         val item = allItems.find { it.id == itemOrder.itemId }
                         if (item != null) {
-                            // Tìm Size tương ứng nếu có
                             val selectedSize = item.sizes.find { it.name == itemOrder.size }
                             val cartItem = CartItem(
                                 item = item,
                                 quantity = itemOrder.quantity,
                                 selectedSize = selectedSize,
-                                note = itemOrder.note.takeIf { it.isNotBlank() }
+                                note = itemOrder.note.takeIf { it?.isNotBlank() == true }
                             )
                             cartItems.add(cartItem)
                         }
@@ -167,6 +169,25 @@ class SalesViewModel @Inject constructor(
         updateTotalPrice()
     }
 
+    fun decreaseItemQuantity(item: Item, selectedSize: Size? = null) {
+        val uniqueKey = "${item.id}_${selectedSize?.id ?: "no_size"}"
+        val existingItemIndex = cartItems.indexOfFirst { it.uniqueKey == uniqueKey }
+
+        if (existingItemIndex != -1) {
+            val existingItem = cartItems[existingItemIndex]
+            val newQuantity = existingItem.quantity - 1
+            if (newQuantity > 0) {
+                cartItems[existingItemIndex] = CartItem(existingItem.item, newQuantity, selectedSize, existingItem.note)
+                Timber.d("CART UPDATED: Decreased quantity for ${item.name} to $newQuantity")
+            } else {
+                cartItems.removeAt(existingItemIndex)
+                Timber.d("CART UPDATED: Removed ${item.name} from cart")
+            }
+            _selectedItems.postValue(ArrayList(cartItems))
+            updateTotalPrice()
+        }
+    }
+
     fun updateItemQuantity(uniqueKey: String, quantity: Int) {
         val index = cartItems.indexOfFirst { it.uniqueKey == uniqueKey }
 
@@ -229,18 +250,15 @@ class SalesViewModel @Inject constructor(
         _totalPrice.postValue(total)
     }
 
-    fun createOrder(tableId: String) {
+    fun createOrder(tableId: String?) {
         if (cartItems.isEmpty()) {
-            _orderResult.postValue(Result.Error(Exception("Cart is empty"), "Giỏ hàng trống"))
+            _orderResult.postValue(OrderResultState.ResultState(Result.Error(Exception("Cart is empty"), "Gio hang trong")))
             return
         }
 
-        // Create start_time (current time in Asia/Ho_Chi_Minh)
         val now = Instant.now()
         val startTime = ZonedDateTime.ofInstant(now, ZoneId.of("Asia/Ho_Chi_Minh"))
             .format(DateTimeFormatter.ISO_INSTANT)
-
-        // Create end_time (23:59 of current day in Asia/Ho_Chi_Minh)
         val endTime = ZonedDateTime.ofInstant(now, ZoneId.of("Asia/Ho_Chi_Minh"))
             .withHour(23)
             .withMinute(59)
@@ -260,20 +278,21 @@ class SalesViewModel @Inject constructor(
         val request = CreateOrderRequest(
             startTime = startTime,
             endTime = endTime,
-            type = "reservation",
+            type = if (tableId.isNullOrBlank()) "takeaway" else "reservation",
             status = "pending",
-            tables = listOf(tableId), // Use single tableId
+            tables = if (tableId.isNullOrBlank()) emptyList() else listOf(tableId),
             items = orderItems
         )
 
         viewModelScope.launch {
             orderRepository.createOrder(request).collect { result ->
-                _orderResult.postValue(result)
+                _orderResult.postValue(OrderResultState.ResultState(result))
                 if (result is Result.Success) {
-                    // Clear cart after successful order creation
                     cartItems.clear()
                     _selectedItems.postValue(emptyList())
                     updateTotalPrice()
+                    // Reset orderResult to prevent re-triggering
+                    _orderResult.postValue(OrderResultState.Reset)
                 }
             }
         }

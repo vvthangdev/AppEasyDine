@@ -1,4 +1,4 @@
-package com.module.admin.food
+package com.module.features.cart
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -19,6 +19,6 @@ class ExampleInstrumentedTest {
     fun useAppContext() {
         // Context of the app under test.
         val appContext = InstrumentationRegistry.getInstrumentation().targetContext
-        assertEquals("com.module.admin.food.test", appContext.packageName)
+        assertEquals("com.module.features.cart.test", appContext.packageName)
     }
 }

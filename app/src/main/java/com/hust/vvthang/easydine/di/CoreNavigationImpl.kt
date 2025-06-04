@@ -12,4 +12,8 @@ class CoreNavigationImpl @Inject constructor() : BaseNavigatorImpl(), CoreNaviga
     override fun openAreaToSales(bundle: Bundle?) {
             goTo(R.id.action_areaFragment_to_salesFragment, bundle)
     }
+
+    override fun openSaleToCart(bundle: Bundle?) {
+        goTo(R.id.action_salesFragment_to_cartFragment, bundle)
+    }
 }

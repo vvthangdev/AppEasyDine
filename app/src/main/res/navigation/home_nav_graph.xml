@@ -9,7 +9,13 @@
         android:id="@+id/salesFragment"
         android:name="com.module.admin.sale.SalesFragment"
         android:label="fragment_sales"
-        tools:layout="@layout/fragment_sales" />
+        tools:layout="@layout/fragment_sales" >
+        <action
+            android:id="@+id/action_salesFragment_to_cartFragment"
+            app:destination="@id/cartFragment"
+            app:popUpTo="@id/salesFragment"
+            app:popUpToInclusive="false"/>
+    </fragment>
     <fragment
         android:id="@+id/areaFragment"
         android:name="com.module.admin.area.AreaFragment"
@@ -29,4 +35,9 @@
         android:name="com.module.admin.notification.NotificationFragment"
         android:label="fragment_notification"
         tools:layout="@layout/fragment_notification" />
+    <fragment
+        android:id="@+id/cartFragment"
+        android:name="com.module.admin.sale.CartFragment"
+        android:label="CartFragment" />
+
 </navigation>

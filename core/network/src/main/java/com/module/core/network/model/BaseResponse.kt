@@ -25,8 +25,7 @@ data class BaseResponse<T>(
     private val status: ApiStatus
         get() = when (rawStatus.uppercase()) {
             "SUCCESS" -> ApiStatus.SUCCESS
-            "ERROR" -> ApiStatus.ERROR
-            else -> throw IllegalArgumentException("Invalid status: $rawStatus")
+            else -> ApiStatus.ERROR // Mặc định là ERROR thay vì throw
         }
 
     fun isSuccess(): Boolean = status == ApiStatus.SUCCESS

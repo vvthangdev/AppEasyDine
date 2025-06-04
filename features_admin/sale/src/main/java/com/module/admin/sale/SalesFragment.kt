@@ -8,29 +8,28 @@ import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.TextView
-import android.widget.Toast
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
-import com.module.core.network.model.Result
+import com.module.core.navigation.CoreNavigation
 import com.module.core.ui.base.BaseFragment
 import com.module.domain.api.model.Category
 import com.module.admin.sale.databinding.FragmentSalesBinding
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
-import java.text.NumberFormat
-import java.util.Locale
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class SalesFragment : BaseFragment<FragmentSalesBinding, SalesViewModel>() {
     override val layoutId: Int
         get() = R.layout.fragment_sales
 
-    private val mViewModel: SalesViewModel by viewModels()
+    private val mViewModel: SalesViewModel by activityViewModels()
     override fun getVM(): SalesViewModel = mViewModel
 
+    @Inject
+    lateinit var mCoreNavigation: CoreNavigation
+
     private lateinit var itemsAdapter: ItemsAdapter
-    private lateinit var selectedItemsAdapter: SelectedItemsAdapter
     private lateinit var categoryAdapter: ArrayAdapter<Category>
     private var tableId: String? = null
     private var tableNumber: Int? = null
@@ -51,7 +50,7 @@ class SalesFragment : BaseFragment<FragmentSalesBinding, SalesViewModel>() {
         observeViewModel()
 
         if (hasOrder) {
-            tableId?.let { mViewModel.loadOrderInfo(it) }
+            tableId?.let { mViewModel.loadOrderInfo(tableId = it) }
         }
     }
 
@@ -98,33 +97,20 @@ class SalesFragment : BaseFragment<FragmentSalesBinding, SalesViewModel>() {
             }
         })
 
-        itemsAdapter = ItemsAdapter { item, selectedSize ->
-            mViewModel.addItemToCart(item, selectedSize)
-        }
+        itemsAdapter = ItemsAdapter(this, mViewModel)
         binding.recyclerViewItems.apply {
             layoutManager = GridLayoutManager(context, 2)
             adapter = itemsAdapter
         }
 
-        selectedItemsAdapter = SelectedItemsAdapter(
-            onQuantityChange = { uniqueKey, quantity ->
-                mViewModel.updateItemQuantity(uniqueKey, quantity)
-            },
-            onItemDetailsChange = { itemId, selectedSize, note, oldUniqueKey ->
-                mViewModel.updateItemDetails(itemId, selectedSize, note, oldUniqueKey)
+        binding.buttonCart.setOnClickListener {
+            val bundle = Bundle().apply {
+                tableId?.let { putString("tableId", it) }
+                tableNumber?.let { putInt("tableNumber", it) }
+                putBoolean("hasOrder", hasOrder)
             }
-        )
-        binding.recyclerViewSelectedItems.apply {
-            layoutManager = LinearLayoutManager(context)
-            adapter = selectedItemsAdapter
-        }
-
-        binding.buttonCreateOrder?.setOnClickListener {
-            tableId?.let { id ->
-                mViewModel.createOrder(id)
-            } ?: run {
-                Toast.makeText(context, "Chưa chọn bàn", Toast.LENGTH_SHORT).show()
-            }
+            Timber.d("Navigating to CartFragment with tableId: $tableId, hasOrder: $hasOrder")
+            mCoreNavigation.openSaleToCart(bundle)
         }
     }
 
@@ -140,46 +126,8 @@ class SalesFragment : BaseFragment<FragmentSalesBinding, SalesViewModel>() {
         }
 
         mViewModel.selectedItems.observe(viewLifecycleOwner) { selectedItems ->
-            selectedItemsAdapter.submitList(selectedItems)
-        }
-
-        mViewModel.totalPrice.observe(viewLifecycleOwner) { total ->
-            Timber.d("Updating total price in UI: $total")
-            binding.textTotalPrice.text = "${NumberFormat.getCurrencyInstance(Locale("vi", "VN")).format(total)}"
-        }
-
-        mViewModel.orderResult.observe(viewLifecycleOwner) { result ->
-            when (result) {
-                is Result.Loading -> {
-                    Timber.d("Creating order...")
-                    Toast.makeText(context, "Đang tạo đơn hàng...", Toast.LENGTH_SHORT).show()
-                }
-                is Result.Success -> {
-                    Timber.d("Order created: ${result.data}")
-                    Toast.makeText(context, "Tạo đơn hàng thành công! ID: ${result.data?.id}", Toast.LENGTH_LONG).show()
-                }
-                is Result.Error -> {
-                    Timber.e(result.exception, "Error creating order: ${result.message}")
-                    Toast.makeText(context, "Lỗi: ${result.message}", Toast.LENGTH_LONG).show()
-                }
-            }
-        }
-
-        mViewModel.orderInfoResult.observe(viewLifecycleOwner) { result ->
-            when (result) {
-                is Result.Loading -> {
-                    Timber.d("Loading order info for tableId: $tableId")
-                    Toast.makeText(context, "Đang tải thông tin đơn hàng...", Toast.LENGTH_SHORT).show()
-                }
-                is Result.Success -> {
-                    Timber.d("Order info loaded: ${result.data}")
-                    Toast.makeText(context, "Tải thông tin đơn hàng thành công!", Toast.LENGTH_SHORT).show()
-                }
-                is Result.Error -> {
-                    Timber.e(result.exception, "Error loading order info: ${result.message}")
-                    Toast.makeText(context, "Lỗi tải thông tin đơn hàng: ${result.message}", Toast.LENGTH_LONG).show()
-                }
-            }
+            val totalQuantity = selectedItems.sumOf { it.quantity }
+            binding.buttonCart.text = "Giỏ hàng ($totalQuantity)"
         }
     }
 }
