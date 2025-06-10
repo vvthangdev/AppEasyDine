@@ -11,14 +11,14 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:background="#121223">
 
             <!-- Header -->
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/cl_header"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="@dimen/dimen_200"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
@@ -62,175 +62,173 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
             <!-- Form -->
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/cl_form"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:background="@drawable/bg_login"
-            android:paddingStart="@dimen/dimen_50"
-            android:paddingTop="@dimen/dimen_10"
-            android:paddingEnd="@dimen/dimen_50"
-            android:paddingBottom="@dimen/dimen_10"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/cl_header">
-
-            <TextView
-                android:id="@+id/tv_email_label"
-                style="@style/text_16"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Email"
-                android:textColor="@color/text_icon_default"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <EditText
-                android:id="@+id/et_email"
-                style="@style/text_16"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:background="@drawable/bg_inp_login"
-                android:gravity="center_vertical"
-                android:hint="example@gmail.com"
-                android:inputType="text"
-                android:padding="@dimen/dimen_16"
-                android:textColorHint="#A0A5BA"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tv_email_label" />
-
-            <TextView
-                android:id="@+id/tv_password_label"
-                style="@style/text_16"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:text="Password"
-                android:textColor="@color/text_icon_default"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/et_email" />
-
-            <EditText
-                android:id="@+id/et_password"
-                style="@style/text_16"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:background="@drawable/bg_inp_login"
-                android:ems="10"
-                android:hint="Password"
-                android:inputType="textPassword"
-                android:padding="@dimen/dimen_16"
-                android:textColorHint="#A0A5BA"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tv_password_label" />
-
-            <ImageButton
-                android:id="@+id/ib_password_visibility"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="16dp"
-                android:background="@null"
-                android:contentDescription="eye"
-                android:scaleType="centerInside"
-                android:src="@drawable/selector_password_visibility"
-                app:layout_constraintBottom_toBottomOf="@id/et_password"
-                app:layout_constraintEnd_toEndOf="@id/et_password"
-                app:layout_constraintTop_toTopOf="@id/et_password" />
-
-            <CheckBox
-                android:id="@+id/cb_remember_me"
-                style="@style/text_14"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="Remember me"
-                android:textColor="@color/text_icon_default"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/et_password" />
-
-            <TextView
-                android:id="@+id/tv_forgot_password"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Forgot Password"
-                android:textColor="#FF7622"
-                app:layout_constraintBottom_toBottomOf="@id/cb_remember_me"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@id/cb_remember_me" />
-
-            <Button
-                android:id="@+id/btn_login"
-                style="@style/text_16_semi_bold"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:background="@drawable/bg_btn_login"
-                android:padding="@dimen/dimen_16"
-                android:text="Log In"
-                android:textAllCaps="true"
-                android:textColor="@color/color_white"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/cb_remember_me" />
-
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/cl_signup_prompt"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
+                android:id="@+id/cl_form"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:background="@drawable/bg_login"
+
+                android:paddingTop="@dimen/dimen_100"
+                android:paddingBottom="@dimen/dimen_50"
+                android:paddingStart="@dimen/dimen_50"
+                android:paddingEnd="@dimen/dimen_50"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/btn_login">
+                app:layout_constraintTop_toBottomOf="@id/cl_header">
 
                 <TextView
-                    android:id="@+id/tv_no_account"
+                    android:id="@+id/tv_email_label"
+                    style="@style/text_16"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Don’t have an account?"
-                    android:textColor="@color/text_icon_secondary"
+                    android:text="Email"
+                    android:textColor="@color/text_icon_default"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
+                <EditText
+                    android:id="@+id/et_email"
+                    style="@style/text_16"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:background="@drawable/bg_inp_login"
+                    android:gravity="center_vertical"
+                    android:hint="example@gmail.com"
+                    android:inputType="text"
+                    android:padding="@dimen/dimen_16"
+                    android:textColorHint="#A0A5BA"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tv_email_label" />
+
                 <TextView
-                    android:id="@+id/tv_signup_link"
+                    android:id="@+id/tv_password_label"
+                    style="@style/text_16"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:text="Sign Up"
-                    android:textColor="@color/base_color_brand"
-                    app:layout_constraintStart_toEndOf="@id/tv_no_account"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    android:layout_marginTop="24dp"
+                    android:text="Password"
+                    android:textColor="@color/text_icon_default"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/et_email" />
+
+                <EditText
+                    android:id="@+id/et_password"
+                    style="@style/text_16"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:background="@drawable/bg_inp_login"
+                    android:ems="10"
+                    android:hint="Password"
+                    android:inputType="textPassword"
+                    android:padding="@dimen/dimen_16"
+                    android:textColorHint="#A0A5BA"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/tv_password_label" />
+
+                <ImageButton
+                    android:id="@+id/ib_password_visibility"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="16dp"
+                    android:background="@null"
+                    android:contentDescription="eye"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/selector_password_visibility"
+                    app:layout_constraintBottom_toBottomOf="@id/et_password"
+                    app:layout_constraintEnd_toEndOf="@id/et_password"
+                    app:layout_constraintTop_toTopOf="@id/et_password" />
+
+                <CheckBox
+                    android:id="@+id/cb_remember_me"
+                    style="@style/text_14"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="24dp"
+                    android:text="Remember me"
+                    android:textColor="@color/text_icon_default"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/et_password" />
+
+                <TextView
+                    android:id="@+id/tv_forgot_password"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Forgot Password"
+                    android:textColor="#FF7622"
+                    app:layout_constraintBottom_toBottomOf="@id/cb_remember_me"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@id/cb_remember_me" />
+
+                <Button
+                    android:id="@+id/btn_login"
+                    style="@style/text_16_semi_bold"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dimen_32"
+                    android:background="@drawable/bg_btn_login"
+                    android:padding="@dimen/dimen_24"
+                    android:text="Log In"
+                    android:textAllCaps="true"
+                    android:textColor="@color/color_white"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/cb_remember_me" />
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/cl_signup_prompt"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintBottom_toTopOf="@+id/tv_or"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent">
+
+                    <TextView
+                        android:id="@+id/tv_no_account"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Don’t have an account?"
+                        android:textColor="@color/text_icon_secondary"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/tv_signup_link"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:text="Sign Up"
+                        android:textColor="@color/base_color_brand"
+                        app:layout_constraintStart_toEndOf="@id/tv_no_account"
+                        app:layout_constraintTop_toTopOf="parent" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <TextView
+                    android:id="@+id/tv_or"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Or"
+                    android:textColor="@color/text_icon_tertiary"
+                    app:layout_constraintBottom_toTopOf="@+id/ib_google_login"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent" />
+
+                <ImageButton
+                    android:id="@+id/ib_google_login"
+                    android:layout_width="@dimen/dimen_48"
+                    android:layout_height="@dimen/dimen_48"
+                    android:background="@null"
+                    android:contentDescription="Google"
+                    android:scaleType="centerCrop"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:srcCompat="@drawable/icons8_google" />
             </androidx.constraintlayout.widget.ConstraintLayout>
-
-            <TextView
-                android:id="@+id/tv_or"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="Or"
-                android:textColor="@color/text_icon_tertiary"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/cl_signup_prompt" />
-
-            <ImageButton
-                android:id="@+id/ib_google_login"
-                android:layout_width="@dimen/dimen_48"
-                android:layout_height="@dimen/dimen_48"
-                android:layout_marginTop="8dp"
-                android:layout_marginBottom="16dp"
-                android:background="@null"
-                android:contentDescription="Google"
-                android:scaleType="centerCrop"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tv_or"
-                app:srcCompat="@drawable/icons8_google" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
 </layout>

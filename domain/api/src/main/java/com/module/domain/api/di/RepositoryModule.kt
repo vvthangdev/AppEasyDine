@@ -8,6 +8,8 @@ import com.module.domain.api.repository.OrderRepository
 import com.module.domain.api.repository.OrderRepositoryImpl
 import com.module.domain.api.repository.TableRepository
 import com.module.domain.api.repository.TableRepositoryImpl
+import com.module.domain.api.repository.UserRepository
+import com.module.domain.api.repository.UserRepositoryImpl
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -28,4 +30,8 @@ abstract class RepositoryModule {
 
     @Binds
     abstract fun provideOrderRepository(repositoryImpl: OrderRepositoryImpl): OrderRepository
+
+    @Binds
+    abstract fun provideUserRepository(repositoryImpl: UserRepositoryImpl): UserRepository
+
 }

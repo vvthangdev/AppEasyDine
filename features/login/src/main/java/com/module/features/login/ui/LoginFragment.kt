@@ -1,13 +1,17 @@
 package com.module.features.login.ui
 
+import android.os.Bundle
 import android.view.View
 import android.view.WindowInsetsController
 import android.widget.Toast
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import com.module.core.ui.base.BaseFragment
+import com.module.domain.api.model.UserRole
 import com.module.features.login.R
 import com.module.features.login.databinding.FragmentLoginBinding
 import dagger.hilt.android.AndroidEntryPoint
+import timber.log.Timber
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -15,6 +19,9 @@ class LoginFragment : BaseFragment<FragmentLoginBinding, LoginViewModel>() {
 
     @Inject
     lateinit var mNavigation: LoginNavigation
+
+    @Inject
+    lateinit var nNavigation: LoginNavigator
 
     override val layoutId
         get() = R.layout.fragment_login
@@ -25,9 +32,14 @@ class LoginFragment : BaseFragment<FragmentLoginBinding, LoginViewModel>() {
 
     private var isPasswordVisible = false
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        nNavigation.bind(findNavController()) // Sửa từ setNavController thành bind
+    }
+
     override fun initView() {
         super.initView()
-
+        setupSignUpLink()
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
             val windowInsetsController = activity?.window?.insetsController
             windowInsetsController?.setSystemBarsAppearance(
@@ -43,6 +55,7 @@ class LoginFragment : BaseFragment<FragmentLoginBinding, LoginViewModel>() {
         }
 
         setupPasswordVisibilityToggle()
+
     }
 
     override fun observeViewModel() {
@@ -93,6 +106,13 @@ class LoginFragment : BaseFragment<FragmentLoginBinding, LoginViewModel>() {
             // Khôi phục typeface sau khi thay đổi inputType
             binding.etPassword.typeface = originalTypeface
             binding.etPassword.setSelection(binding.etPassword.text?.length ?: 0)
+        }
+    }
+
+    private fun setupSignUpLink() {
+        binding.clSignupPrompt.setOnClickListener {
+            Timber.d("Navigating to SignUpFragment")
+            nNavigation.openLoginToSignUp()
         }
     }
 }

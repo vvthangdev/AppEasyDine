@@ -22,9 +22,6 @@ class AreaFragment : BaseFragment<FragmentAreaBinding, AreaViewModel>() {
     private val mViewModel: AreaViewModel by viewModels()
     override fun getVM(): AreaViewModel = mViewModel
 
-//    @Inject
-//    lateinit var mNavigator: AreaNavigation
-
     @Inject
     lateinit var mCoreNavigation: CoreNavigation
 
@@ -71,7 +68,6 @@ class AreaFragment : BaseFragment<FragmentAreaBinding, AreaViewModel>() {
             val bundle = Bundle().apply {
                 putString("tableId", tableStatus.tableId)
                 putInt("tableNumber", tableStatus.tableNumber)
-                // Thêm cờ để biết bàn có đơn hàng hay không
                 putBoolean("hasOrder", tableStatus.status == "Reserved" || tableStatus.status == "Occupied")
             }
             Timber.d("Navigating to SalesFragment with tableId: ${tableStatus.tableId}, hasOrder: ${bundle.getBoolean("hasOrder")}")

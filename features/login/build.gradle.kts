@@ -68,6 +68,8 @@ dependencies {
     implementation(project(":core:navigation"))
     implementation(project(":domain:api"))
 
+    implementation(libs.timber.log)
+
     implementation(libs.hilt.android)
     kapt(libs.hilt.complier)
 

@@ -1,5 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
-    <!-- Màu nền -->
-    <item android:drawable="@color/color_white" />
+    <solid android:color="#009688" />
+    <!--    <item android:drawable="#009688" />-->
+<!--    <item-->
+<!--        android:drawable="@mipmap/ic_launcher_round"-->
+<!--        android:gravity="center" />-->
 </layer-list>
+<!--<?xml version="1.0" encoding="utf-8"?>-->
+<!--<layer-list xmlns:android="http://schemas.android.com/apk/res/android">-->
+<!--    &lt;!&ndash; Màu nền &ndash;&gt;-->
+<!--    <item android:drawable="#4CAF50" />-->
+<!--</layer-list>-->

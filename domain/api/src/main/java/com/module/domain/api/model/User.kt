@@ -7,8 +7,6 @@ data class SignUpRequest(
     @SerializedName("name") val name: String,
     @SerializedName("username") val username: String,
     @SerializedName("phone") val phone: String,
-    @SerializedName("address") val address: String,
-    @SerializedName("bio") val bio: String,
     @SerializedName("password") val password: String
 )
 
@@ -67,3 +65,19 @@ data class UpdateUserRequest(
 data class DeleteUserRequest(
     @SerializedName("password") val password: String
 )
+
+enum class UserRole {
+    ADMIN,
+    STAFF,
+    CUSTOMER;
+
+    companion object {
+        fun fromString(role: String?): UserRole? {
+            return try {
+                role?.uppercase()?.let { valueOf(it) }
+            } catch (e: IllegalArgumentException) {
+                null
+            }
+        }
+    }
+}

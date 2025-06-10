@@ -14,6 +14,8 @@ import com.module.domain.api.model.OrderItemRequest
 import com.module.domain.api.model.Size
 import com.module.domain.api.repository.ItemRepository
 import com.module.domain.api.repository.OrderRepository
+import com.module.core.utils.extensions.shared_preferences.AppPreferences
+import com.module.domain.api.model.UserRole
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -31,7 +33,8 @@ sealed class OrderResultState {
 @HiltViewModel
 class SalesViewModel @Inject constructor(
     private val orderRepository: OrderRepository,
-    private val itemRepository: ItemRepository
+    private val itemRepository: ItemRepository,
+    private val appPreferences: AppPreferences
 ) : BaseViewModel() {
     private val _categories = MutableLiveData<List<Category>>()
     val categories: LiveData<List<Category>> = _categories
@@ -53,14 +56,24 @@ class SalesViewModel @Inject constructor(
     private val _orderInfoResult = MutableLiveData<Result<OrderInfoResponse>>()
     val orderInfoResult: LiveData<Result<OrderInfoResponse>> = _orderInfoResult
 
+    private val _errorMessage = MutableLiveData<String>()
+    val errorMessage: LiveData<String> = _errorMessage
+
     private var allItems: List<Item> = emptyList()
+    private var tableId: String? = null
 
     init {
         loadCategories()
         loadAllItems()
     }
 
+    fun setTableId(id: String?) {
+        tableId = id
+        Timber.d("Table ID set to: $tableId")
+    }
+
     fun loadOrderInfo(tableId: String? = null, orderId: String? = null) {
+        this.tableId = tableId
         viewModelScope.launch {
             orderRepository.getOrderInfo(orderId, tableId).collect { result ->
                 _orderInfoResult.postValue(result)
@@ -147,6 +160,13 @@ class SalesViewModel @Inject constructor(
     }
 
     fun addItemToCart(item: Item, selectedSize: Size? = null) {
+        val userRole = UserRole.fromString(appPreferences.get(com.module.core.utils.extensions.constants.PreferenceKey.USER_ROLE, ""))
+        if (userRole == UserRole.STAFF && tableId.isNullOrBlank()) {
+            _errorMessage.postValue("Vui lòng chọn bàn trước khi thêm món ăn.")
+            Timber.d("Cannot add item: No table selected for STAFF role")
+            return
+        }
+
         if (item.sizes.isNotEmpty() && selectedSize == null) {
             Timber.d("Item ${item.name} has sizes but no size selected. Trigger dialog.")
             return
@@ -252,7 +272,13 @@ class SalesViewModel @Inject constructor(
 
     fun createOrder(tableId: String?) {
         if (cartItems.isEmpty()) {
-            _orderResult.postValue(OrderResultState.ResultState(Result.Error(Exception("Cart is empty"), "Gio hang trong")))
+            _orderResult.postValue(OrderResultState.ResultState(Result.Error(Exception("Cart is empty"), "Giỏ hàng trống")))
+            return
+        }
+
+        val userRole = UserRole.fromString(appPreferences.get(com.module.core.utils.extensions.constants.PreferenceKey.USER_ROLE, ""))
+        if (userRole == UserRole.STAFF && tableId.isNullOrBlank()) {
+            _orderResult.postValue(OrderResultState.ResultState(Result.Error(Exception("No table selected"), "Vui lòng chọn bàn trước khi tạo đơn hàng")))
             return
         }
 

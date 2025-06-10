@@ -91,6 +91,7 @@ dependencies {
     implementation(libs.core.splash)
 
     implementation(libs.hilt.android)
+    implementation(project(":domain:api"))
     kapt(libs.hilt.complier)
 
     implementation(libs.timber.log)
@@ -98,6 +99,7 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+    implementation ("androidx.core:core-splashscreen:1.0.1")
 }
 
 kapt {

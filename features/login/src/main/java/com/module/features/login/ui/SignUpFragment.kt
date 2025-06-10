@@ -1,60 +1,62 @@
 package com.module.features.login.ui
 
-import android.os.Bundle
-import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.widget.Toast
+import androidx.fragment.app.viewModels
+import com.module.core.ui.base.BaseFragment
 import com.module.features.login.R
+import com.module.features.login.databinding.FragmentSignUpBinding
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
+@AndroidEntryPoint
+class SignUpFragment : BaseFragment<FragmentSignUpBinding, SignUpViewModel>() {
 
-/**
- * A simple [Fragment] subclass.
- * Use the [SignUpFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
-class SignUpFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
+    @Inject
+    lateinit var mNavigation: LoginNavigation
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
+    override val layoutId: Int
+        get() = R.layout.fragment_sign_up
+
+    private val mViewModel: SignUpViewModel by viewModels()
+
+    override fun getVM(): SignUpViewModel {
+        return mViewModel
+    }
+
+    override fun initView() {
+        super.initView()
+        setupSignUpButton()
+    }
+
+    override fun observeViewModel() {
+        super.observeViewModel()
+        mViewModel.uiState.observe(viewLifecycleOwner) { state ->
+            when (state) {
+                is SignUpState.SignUpSuccess -> {
+                    // Hiển thị dialog thành công
+                    val dialog = SignUpSuccessDialogFragment.newInstance(state.username)
+                    dialog.show(parentFragmentManager, "SignUpSuccessDialog")
+                }
+                is SignUpState.SignUpFailed -> {
+                    Toast.makeText(
+                        requireContext(),
+                        state.e?.message ?: "Sign up failed",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }
         }
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_sign_up, container, false)
-    }
+    private fun setupSignUpButton() {
+        binding.btnSignup.setOnClickListener {
+            val email = binding.etEmail.text.toString()
+            val name = binding.etName.text.toString()
+            val username = binding.etUsername.text.toString()
+            val phone = binding.etPhone.text.toString()
+            val password = binding.etPassword.text.toString()
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment SignUpFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            SignUpFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
+            mViewModel.signUp(email, name, username, phone, password)
+        }
     }
 }

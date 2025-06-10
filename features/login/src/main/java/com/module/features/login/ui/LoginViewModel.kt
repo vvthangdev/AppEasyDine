@@ -8,6 +8,7 @@ import com.module.core.ui.base.BaseViewModel
 import com.module.core.utils.extensions.constants.PreferenceKey
 import com.module.core.utils.extensions.shared_preferences.AppPreferences
 import com.module.domain.api.model.Login
+import com.module.domain.api.model.UserRole
 import com.module.domain.api.repository.AuthRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -86,18 +87,3 @@ sealed class LoginState {
     data class LoginFailed(val e: Throwable?) : LoginState()
 }
 
-enum class UserRole {
-    ADMIN,
-    STAFF,
-    CUSTOMER;
-
-    companion object {
-        fun fromString(role: String?): UserRole? {
-            return try {
-                role?.uppercase()?.let { valueOf(it) }
-            } catch (e: IllegalArgumentException) {
-                null
-            }
-        }
-    }
-}

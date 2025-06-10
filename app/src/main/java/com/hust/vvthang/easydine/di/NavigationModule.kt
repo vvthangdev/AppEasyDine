@@ -4,6 +4,8 @@ import com.hust.vvthang.easydine.navigation.AppNavigation
 import com.module.core.navigation.BaseNavigator
 import com.module.core.navigation.CoreNavigation
 import com.module.features.login.ui.LoginNavigation
+import com.module.features.login.ui.LoginNavigator
+import com.module.features.login.ui.LoginNavigatorImpl
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -37,4 +39,8 @@ abstract class ActivityNavigationModule {
     @Binds
     @ActivityScoped
     abstract fun provideAdHomeNavigation(navigator: CoreNavigationImpl): CoreNavigation
+
+    @Binds
+    @ActivityScoped
+    abstract fun provideLoginNavigator(navigator: LoginNavigatorImpl): LoginNavigator
 }

@@ -9,6 +9,7 @@ import com.module.domain.api.interfaces.AuthApiInterface
 import com.module.domain.api.interfaces.ItemApiInterface
 import com.module.domain.api.interfaces.OrderApiInterface
 import com.module.domain.api.interfaces.TableApiInterface
+import com.module.domain.api.interfaces.UserApiInterface
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -118,5 +119,19 @@ class ApiModule {
             .addConverterFactory(GsonConverterFactory.create(gson))
             .build()
         return retrofit.create(OrderApiInterface::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideUserApiInterface(
+        @AuthHttpClient authClient: OkHttpClient,
+        gson: Gson,
+    ): UserApiInterface {
+        val retrofit = Retrofit.Builder()
+            .baseUrl(BuildConfig.API_URL)
+            .client(authClient)
+            .addConverterFactory(GsonConverterFactory.create(gson))
+            .build()
+        return retrofit.create(UserApiInterface::class.java)
     }
 }
