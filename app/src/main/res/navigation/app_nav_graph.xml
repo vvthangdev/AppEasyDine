@@ -21,42 +21,41 @@
             app:popUpTo="@id/splashFragment"
             app:popUpToInclusive="true" />
         <action
-            android:id="@+id/action_splashFragment_to_loginFragment"
-            app:destination="@id/loginFragment"
-            app:popUpTo="@id/splashFragment"
-            app:popUpToInclusive="true" />
+            android:id="@+id/action_splashFragment_to_login_nav"
+            app:destination="@id/login_nav" />
     </fragment>
 
-    <fragment
-        android:id="@+id/loginFragment"
-        android:name="com.module.features.login.ui.LoginFragment"
-        android:label="fragment_login"
-        tools:layout="@layout/fragment_login">
-        <action
-            android:id="@+id/action_loginFragment_to_adHomeFragment"
-            app:destination="@id/adHomeFragment"
-            app:popUpTo="@id/loginFragment"
-            app:popUpToInclusive="true" />
-        <action
-            android:id="@+id/action_loginFragment_to_userHomeFragment"
-            app:destination="@id/userHomeFragment"
-            app:popUpTo="@id/loginFragment"
-            app:popUpToInclusive="true" />
-        <action
-            android:id="@+id/action_loginFragment_to_signUpFragment"
-            app:destination="@id/signUpFragment" />
-    </fragment>
+    <include app:graph="@navigation/home_nav_graph" />
+
+    <include
+        android:id="@+id/login_nav"
+        app:graph="@navigation/login_nav" />
+
+    <action
+        android:id="@+id/action_to_loginNav"
+        app:destination="@id/login_nav" />
+
+    <action
+        android:id="@+id/action_to_splashFragment"
+        app:destination="@id/splashFragment"
+        app:popUpTo="@id/splashFragment"
+        app:popUpToInclusive="true"/>
 
     <fragment
         android:id="@+id/adHomeFragment"
         android:name="com.hust.vvthang.easydine.ui.AdHomeFragment"
         android:label="fragment_ad_home"
         tools:layout="@layout/fragment_ad_home">
+
         <action
-            android:id="@+id/action_adHomeFragment_to_loginFragment"
-            app:destination="@id/loginFragment"
+            android:id="@+id/action_adHomeFragment_to_editProfileFragment"
+            app:destination="@id/editProfileFragment" />
+        <action
+            android:id="@+id/action_adHomeFragment_to_cartFragment"
+            app:destination="@id/cartFragment"
             app:popUpTo="@id/adHomeFragment"
-            app:popUpToInclusive="true" />
+            app:popUpToInclusive="false"
+            />
     </fragment>
 
     <fragment
@@ -71,8 +70,25 @@
             app:popUpToInclusive="true" />
     </fragment>
     <fragment
-        android:id="@+id/signUpFragment"
-        android:name="com.module.features.login.ui.SignUpFragment"
-        android:label="SignUpFragment" />
+        android:id="@+id/editProfileFragment"
+        android:name="com.module.admin.profile.EditProfileFragment"
+        android:label="EditProfileFragment" />
+    <fragment
+        android:id="@+id/cartFragment"
+        android:name="com.module.admin.sale.CartFragment"
+        android:label="CartFragment" />
+
+    <fragment
+        android:id="@+id/salesFragment"
+        android:name="com.module.admin.sale.SalesFragment"
+        android:label="SalesFragment" >
+        <action
+            android:id="@+id/action_salesFragment_to_cartFragment"
+            app:destination="@id/cartFragment" />
+    </fragment>
+
+    <action
+        android:id="@+id/action_to_cartFragment"
+        app:destination="@id/cartFragment" />
 
 </navigation>

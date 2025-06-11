@@ -10,6 +10,7 @@ import androidx.navigation.fragment.NavHostFragment
 import com.hust.vvthang.easydine.R
 import com.hust.vvthang.easydine.databinding.ActivityMainBinding
 import com.hust.vvthang.easydine.navigation.AppNavigation
+import com.module.core.navigation.CoreNavigation
 import com.module.core.ui.base.BaseActivity
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
@@ -23,6 +24,9 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>() {
 
     @Inject
     lateinit var appNavigation: AppNavigation
+
+    @Inject
+    lateinit var coreNavigation: CoreNavigation
 
     override fun getVM(): MainViewModel = mViewModel
 
@@ -65,6 +69,7 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>() {
         val navHostFragment: NavHostFragment =
             supportFragmentManager.findFragmentById(R.id.nav_host) as NavHostFragment
         appNavigation.bind(navHostFragment.navController)
+        coreNavigation.bind(navHostFragment.navController) // Thêm dòng này
         Timber.tag("MainActivity").d("Navigation bound")
     }
 }

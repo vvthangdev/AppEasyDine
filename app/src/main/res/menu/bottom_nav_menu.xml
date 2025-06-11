@@ -11,12 +11,12 @@
         android:title="@string/Area"/>
 
     <item
-        android:id="@+id/staffFragment"
+        android:id="@+id/orderFragment"
         android:icon="@drawable/chef_restaurant_man_svgrepo_com"
         android:title="@string/Staff"/>
 
     <item
-        android:id="@+id/notificationFragment"
-        android:icon="@drawable/notification_12_svgrepo_com"
+        android:id="@+id/profileFragment"
+        android:icon="@drawable/profile_round_1342_svgrepo_com"
         android:title="@string/notifications"/>
 </menu>

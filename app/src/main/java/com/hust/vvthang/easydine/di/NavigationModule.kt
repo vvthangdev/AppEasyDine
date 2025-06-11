@@ -1,6 +1,8 @@
 package com.hust.vvthang.easydine.di
 
 import com.hust.vvthang.easydine.navigation.AppNavigation
+import com.module.admin.profile.ProfileNavigator
+import com.module.admin.sale.SaleNavigation
 import com.module.core.navigation.BaseNavigator
 import com.module.core.navigation.CoreNavigation
 import com.module.features.login.ui.LoginNavigation
@@ -43,4 +45,12 @@ abstract class ActivityNavigationModule {
     @Binds
     @ActivityScoped
     abstract fun provideLoginNavigator(navigator: LoginNavigatorImpl): LoginNavigator
+
+    @Binds
+    @ActivityScoped
+    abstract fun provideProfileNavigator(navigator: CoreNavigationImpl): ProfileNavigator
+
+    @Binds
+    @ActivityScoped
+    abstract fun provideSaleNavigator(navigator: CoreNavigationImpl): SaleNavigation
 }

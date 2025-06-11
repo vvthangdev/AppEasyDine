@@ -1,10 +1,16 @@
 package com.module.admin.sale
 
+import android.app.AlertDialog
+import android.app.DatePickerDialog
+import android.app.TimePickerDialog
 import android.os.Bundle
 import android.view.View
+import android.widget.EditText
+import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.module.core.navigation.CoreNavigation
 import com.module.core.network.model.Result
@@ -13,6 +19,10 @@ import com.module.admin.sale.databinding.FragmentCartBinding
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 import java.text.NumberFormat
+import java.time.LocalDateTime
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
+import java.util.Calendar
 import java.util.Locale
 import javax.inject.Inject
 
@@ -38,19 +48,6 @@ class CartFragment : BaseFragment<FragmentCartBinding, SalesViewModel>() {
         tableNumber = arguments?.getInt("tableNumber")
         hasOrder = arguments?.getBoolean("hasOrder", false) ?: false
         Timber.d("CartFragment created with tableId: $tableId")
-
-        // Handle back press
-        val callback = object : OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-                Timber.d("Back pressed in CartFragment")
-                if (mCoreNavigation.back()) {
-                    Timber.d("Navigated up successfully")
-                } else {
-                    Timber.w("Failed to navigate up")
-                }
-            }
-        }
-        requireActivity().onBackPressedDispatcher.addCallback(this, callback)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -58,6 +55,11 @@ class CartFragment : BaseFragment<FragmentCartBinding, SalesViewModel>() {
         Timber.d("Initializing CartFragment view")
         setupViews()
         observeViewModel()
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                findNavController().navigateUp()
+            }
+        })
 
         if (hasOrder) {
             tableId?.let { mViewModel.loadOrderInfo(it) }
@@ -66,8 +68,8 @@ class CartFragment : BaseFragment<FragmentCartBinding, SalesViewModel>() {
 
     private fun setupViews() {
         binding.textSelectedTable?.text = tableId?.let {
-            "Bàn: $it (Số: $tableNumber)"
-        } ?: "Mang về"
+            "Bàn số: $tableNumber"
+        } ?: "Chuc ban ngon mieng"
         Timber.d("Set textSelectedTable to: ${binding.textSelectedTable?.text}")
 
         selectedItemsAdapter = SelectedItemsAdapter(
@@ -84,9 +86,78 @@ class CartFragment : BaseFragment<FragmentCartBinding, SalesViewModel>() {
         }
 
         binding.buttonCreateOrder?.setOnClickListener {
-            mViewModel.createOrder(tableId)
-            Timber.d("Creating order with tableId: $tableId")
+            showOrderTypeDialog()
         }
+    }
+
+    private fun showOrderTypeDialog() {
+        AlertDialog.Builder(requireContext())
+            .setTitle("Chọn loại đơn hàng")
+            .setMessage("Bạn muốn đặt hàng ngay hay đặt bàn trước?")
+            .setPositiveButton("Đặt hàng ngay") { _, _ ->
+                mViewModel.createOrder(tableId)
+                Timber.d("Creating order with tableId: $tableId")
+            }
+            .setNegativeButton("Đặt bàn trước") { _, _ ->
+                showReserveTableDialog()
+            }
+            .setCancelable(true)
+            .show()
+    }
+
+    private fun showReserveTableDialog() {
+        val dialogView = layoutInflater.inflate(R.layout.dialog_reserve_table, null)
+        val editTextPeople = dialogView.findViewById<EditText>(R.id.editTextPeople)
+        val textViewTime = dialogView.findViewById<TextView>(R.id.textViewTime)
+
+        var selectedTime: LocalDateTime? = null
+
+        textViewTime.setOnClickListener {
+            val calendar = Calendar.getInstance()
+            DatePickerDialog(
+                requireContext(),
+                { _, year, month, day ->
+                    TimePickerDialog(
+                        requireContext(),
+                        { _, hour, minute ->
+                            selectedTime = LocalDateTime.of(year, month + 1, day, hour, minute)
+                            textViewTime.text = selectedTime?.format(
+                                DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")
+                            )
+                        },
+                        calendar.get(Calendar.HOUR_OF_DAY),
+                        calendar.get(Calendar.MINUTE),
+                        true
+                    ).show()
+                },
+                calendar.get(Calendar.YEAR),
+                calendar.get(Calendar.MONTH),
+                calendar.get(Calendar.DAY_OF_MONTH)
+            ).show()
+        }
+
+        AlertDialog.Builder(requireContext())
+            .setTitle("Đặt bàn trước")
+            .setView(dialogView)
+            .setPositiveButton("Xác nhận") { _, _ ->
+                val peopleAssigned = editTextPeople.text.toString().toIntOrNull()
+                if (peopleAssigned == null || peopleAssigned <= 0) {
+                    Toast.makeText(context, "Vui lòng nhập số người hợp lệ", Toast.LENGTH_SHORT).show()
+                    return@setPositiveButton
+                }
+                if (selectedTime == null) {
+                    Toast.makeText(context, "Vui lòng chọn thời gian", Toast.LENGTH_SHORT).show()
+                    return@setPositiveButton
+                }
+
+                val startTime = selectedTime!!.atZone(ZoneId.of("Asia/Ho_Chi_Minh"))
+                    .format(DateTimeFormatter.ISO_INSTANT)
+                mViewModel.reserveTable(startTime, peopleAssigned, tableId)
+                Timber.d("Reserving table with startTime: $startTime, people: $peopleAssigned, tableId: $tableId")
+            }
+            .setNegativeButton("Hủy", null)
+            .setCancelable(true)
+            .show()
     }
 
     override fun observeViewModel() {
@@ -121,7 +192,6 @@ class CartFragment : BaseFragment<FragmentCartBinding, SalesViewModel>() {
                 }
                 is OrderResultState.Reset -> {
                     Timber.d("Order result reset, no action taken")
-                    // No action needed, allows viewing cart
                 }
             }
         }
@@ -139,6 +209,32 @@ class CartFragment : BaseFragment<FragmentCartBinding, SalesViewModel>() {
                 is Result.Error -> {
                     Timber.e(result.exception, "Error loading order info: ${result.message}")
                     Toast.makeText(context, "Lỗi tải đơn hàng: ${result.message}", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+
+        mViewModel.reserveTableResult.observe(viewLifecycleOwner) { state ->
+            when (state) {
+                is ReserveTableResultState.ResultState -> {
+                    when (state.result) {
+                        is Result.Loading -> {
+                            Timber.d("Reserving table...")
+                            Toast.makeText(context, "Đang đặt bàn...", Toast.LENGTH_SHORT).show()
+                        }
+                        is Result.Success -> {
+                            Timber.d("Table reserved successfully")
+                            Toast.makeText(context, "Đặt bàn thành công!", Toast.LENGTH_SHORT).show()
+                            mCoreNavigation.back()
+                        }
+                        is Result.Error -> {
+                            Timber.e(state.result.exception, "Error reserving table: ${state.result.message}")
+                            Toast.makeText(context, "Lỗi đặt bàn: ${state.result.message}", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                }
+                is ReserveTableResultState.Reset -> {
+                    Timber.d("Reserve table result reset, no action taken")
+                    // Không hiển thị Toast khi trạng thái reset
                 }
             }
         }

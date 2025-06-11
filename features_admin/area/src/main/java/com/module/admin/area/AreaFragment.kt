@@ -6,11 +6,15 @@ import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.TextView
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
+import androidx.navigation.NavController
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.viewpager2.widget.ViewPager2
 import com.module.admin.area.databinding.FragmentAreaBinding
 import com.module.core.navigation.CoreNavigation
 import com.module.core.ui.base.BaseFragment
+import com.module.features.utils.AreaSaleViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 import javax.inject.Inject
@@ -21,12 +25,15 @@ class AreaFragment : BaseFragment<FragmentAreaBinding, AreaViewModel>() {
 
     private val mViewModel: AreaViewModel by viewModels()
     override fun getVM(): AreaViewModel = mViewModel
+    private val sharedViewModel: AreaSaleViewModel by activityViewModels()
 
     @Inject
     lateinit var mCoreNavigation: CoreNavigation
 
     private lateinit var tableAdapter: TableAdapter
     private lateinit var areaAdapter: ArrayAdapter<String>
+
+    var viewPager: ViewPager2? = null // Để chuyển trang
 
     override fun initView() {
         super.initView()
@@ -65,13 +72,11 @@ class AreaFragment : BaseFragment<FragmentAreaBinding, AreaViewModel>() {
         }
 
         tableAdapter = TableAdapter { tableStatus ->
-            val bundle = Bundle().apply {
-                putString("tableId", tableStatus.tableId)
-                putInt("tableNumber", tableStatus.tableNumber)
-                putBoolean("hasOrder", tableStatus.status == "Reserved" || tableStatus.status == "Occupied")
-            }
-            Timber.d("Navigating to SalesFragment with tableId: ${tableStatus.tableId}, hasOrder: ${bundle.getBoolean("hasOrder")}")
-            mCoreNavigation.openAreaToSales(bundle)
+            sharedViewModel.setSelectedTableId(tableStatus.tableId)
+            sharedViewModel.setSelectedTableNumber(tableStatus.tableNumber)
+            viewPager?.currentItem = 0 // Chuyển sang SalesFragment
+//            tableClickListener?.onTableClicked() // Gọi listener thay vì điều hướng
+//            mCoreNavigation.openAreaToSales(bundle)
         }
         binding.recyclerViewTables.apply {
             layoutManager = GridLayoutManager(context, 3)

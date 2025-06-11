@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <EditText
+        android:id="@+id/editTextPeople"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Số người"
+        android:inputType="number" />
+
+    <TextView
+        android:id="@+id/textViewTime"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:hint="Chọn thời gian"
+        android:padding="8dp"
+        android:background="?android:attr/selectableItemBackground" />
+
+</LinearLayout>

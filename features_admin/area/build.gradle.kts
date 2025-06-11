@@ -67,6 +67,7 @@ dependencies {
     implementation(project(":core:language"))
     implementation(project(":core:navigation"))
     implementation(project(":domain:api"))
+    implementation(project(":features:utils"))
     implementation (libs.timber.log)
 
     implementation(libs.hilt.android)

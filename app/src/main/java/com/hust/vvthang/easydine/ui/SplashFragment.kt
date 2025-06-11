@@ -74,15 +74,15 @@ class SplashFragment : Fragment(R.layout.fragment_splash) {
                 }
                 else -> {
                     Timber.tag("SplashFragment").d("vvt 03: Navigating to LoginFragment, invalid role")
-                    findNavController().navigate(R.id.action_splashFragment_to_loginFragment)
+                    findNavController().navigate(R.id.action_to_loginNav)
                 }
             }
         } else {
-            Timber.tag("SplashFragment").d("No refresh token, navigating to LoginFragment")
-            findNavController().navigate(R.id.action_splashFragment_to_loginFragment)
+            findNavController().navigate(R.id.action_to_loginNav)
         }
 
         binding.progressBar.visibility = View.GONE
         Timber.tag("SplashFragment").d("vvt 06: ProgressBar hidden")
+
     }
 }

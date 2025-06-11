@@ -5,17 +5,10 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.module.core.network.model.Result
 import com.module.core.ui.base.BaseViewModel
-import com.module.domain.api.model.CartItem
-import com.module.domain.api.model.Category
-import com.module.domain.api.model.CreateOrderRequest
-import com.module.domain.api.model.Item
-import com.module.domain.api.model.OrderInfoResponse
-import com.module.domain.api.model.OrderItemRequest
-import com.module.domain.api.model.Size
+import com.module.domain.api.model.*
 import com.module.domain.api.repository.ItemRepository
 import com.module.domain.api.repository.OrderRepository
 import com.module.core.utils.extensions.shared_preferences.AppPreferences
-import com.module.domain.api.model.UserRole
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -56,11 +49,15 @@ class SalesViewModel @Inject constructor(
     private val _orderInfoResult = MutableLiveData<Result<OrderInfoResponse>>()
     val orderInfoResult: LiveData<Result<OrderInfoResponse>> = _orderInfoResult
 
+    private val _reserveTableResult = MutableLiveData<ReserveTableResultState>()
+    val reserveTableResult: LiveData<ReserveTableResultState> = _reserveTableResult
+
     private val _errorMessage = MutableLiveData<String>()
     val errorMessage: LiveData<String> = _errorMessage
 
     private var allItems: List<Item> = emptyList()
     private var tableId: String? = null
+    private var tableNumber: Int? = null
 
     init {
         loadCategories()
@@ -70,6 +67,11 @@ class SalesViewModel @Inject constructor(
     fun setTableId(id: String?) {
         tableId = id
         Timber.d("Table ID set to: $tableId")
+    }
+
+    fun setTableNumber(number: Int?) {
+        tableNumber = number
+        Timber.d("Table number set to: $tableNumber")
     }
 
     fun loadOrderInfo(tableId: String? = null, orderId: String? = null) {
@@ -160,13 +162,6 @@ class SalesViewModel @Inject constructor(
     }
 
     fun addItemToCart(item: Item, selectedSize: Size? = null) {
-        val userRole = UserRole.fromString(appPreferences.get(com.module.core.utils.extensions.constants.PreferenceKey.USER_ROLE, ""))
-        if (userRole == UserRole.STAFF && tableId.isNullOrBlank()) {
-            _errorMessage.postValue("Vui lòng chọn bàn trước khi thêm món ăn.")
-            Timber.d("Cannot add item: No table selected for STAFF role")
-            return
-        }
-
         if (item.sizes.isNotEmpty() && selectedSize == null) {
             Timber.d("Item ${item.name} has sizes but no size selected. Trigger dialog.")
             return
@@ -276,12 +271,6 @@ class SalesViewModel @Inject constructor(
             return
         }
 
-        val userRole = UserRole.fromString(appPreferences.get(com.module.core.utils.extensions.constants.PreferenceKey.USER_ROLE, ""))
-        if (userRole == UserRole.STAFF && tableId.isNullOrBlank()) {
-            _orderResult.postValue(OrderResultState.ResultState(Result.Error(Exception("No table selected"), "Vui lòng chọn bàn trước khi tạo đơn hàng")))
-            return
-        }
-
         val now = Instant.now()
         val startTime = ZonedDateTime.ofInstant(now, ZoneId.of("Asia/Ho_Chi_Minh"))
             .format(DateTimeFormatter.ISO_INSTANT)
@@ -317,10 +306,50 @@ class SalesViewModel @Inject constructor(
                     cartItems.clear()
                     _selectedItems.postValue(emptyList())
                     updateTotalPrice()
-                    // Reset orderResult to prevent re-triggering
                     _orderResult.postValue(OrderResultState.Reset)
                 }
             }
         }
     }
+
+    fun reserveTable(startTime: String, peopleAssigned: Int, tableId: String?) {
+        if (peopleAssigned <= 0) {
+            _reserveTableResult.postValue(ReserveTableResultState.ResultState(Result.Error(Exception("Invalid people count"), "Số người phải lớn hơn 0")))
+            return
+        }
+
+        val orderItems = cartItems.map { cartItem ->
+            OrderItemRequest(
+                id = cartItem.item.id,
+                quantity = cartItem.quantity,
+                size = cartItem.selectedSize?.name,
+                note = cartItem.note ?: ""
+            )
+        }
+
+        val request = ReserveTableRequest(
+            startTime = startTime,
+            peopleAssigned = peopleAssigned,
+            items = orderItems,
+            status = "pending"
+        )
+
+        viewModelScope.launch {
+            orderRepository.reserveTable(request).collect { result ->
+                _reserveTableResult.postValue(ReserveTableResultState.ResultState(result))
+                if (result is Result.Success) {
+                    cartItems.clear()
+                    _selectedItems.postValue(emptyList())
+                    updateTotalPrice()
+                    // Reset trạng thái sau khi xử lý
+                    _reserveTableResult.postValue(ReserveTableResultState.Reset)
+                }
+            }
+        }
+    }
+}
+
+sealed class ReserveTableResultState {
+    data class ResultState(val result: Result<Unit>) : ReserveTableResultState()
+    object Reset : ReserveTableResultState()
 }

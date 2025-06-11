@@ -14,6 +14,7 @@ import com.module.core.navigation.CoreNavigation
 import com.module.core.ui.base.BaseFragment
 import com.module.domain.api.model.Category
 import com.module.admin.sale.databinding.FragmentSalesBinding
+import com.module.features.utils.AreaSaleViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 import javax.inject.Inject
@@ -24,10 +25,11 @@ class SalesFragment : BaseFragment<FragmentSalesBinding, SalesViewModel>() {
         get() = R.layout.fragment_sales
 
     private val mViewModel: SalesViewModel by activityViewModels()
+    private val sharedViewModel: AreaSaleViewModel by activityViewModels()
     override fun getVM(): SalesViewModel = mViewModel
 
     @Inject
-    lateinit var mCoreNavigation: CoreNavigation
+    lateinit var mCoreNavigation: SaleNavigation
 
     private lateinit var itemsAdapter: ItemsAdapter
     private lateinit var categoryAdapter: ArrayAdapter<Category>
@@ -37,10 +39,10 @@ class SalesFragment : BaseFragment<FragmentSalesBinding, SalesViewModel>() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        tableId = arguments?.getString("tableId")
-        tableNumber = arguments?.getInt("tableNumber")
-        hasOrder = arguments?.getBoolean("hasOrder", false) ?: false
-        Timber.d("SalesFragment created with tableId: $tableId")
+//        tableId = arguments?.getString("tableId")
+//        tableNumber = arguments?.getInt("tableNumber")
+//        hasOrder = arguments?.getBoolean("hasOrder", false) ?: false
+//        Timber.d("SalesFragment created with tableId: $tableId")
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -56,7 +58,7 @@ class SalesFragment : BaseFragment<FragmentSalesBinding, SalesViewModel>() {
 
     private fun setupViews() {
         binding.textSelectedTable?.text = tableId?.let {
-            "Bàn: $it (Số: $tableNumber)"
+            "Bàn $tableId va $tableNumber)"
         } ?: "Chưa chọn bàn"
         Timber.d("Set textSelectedTable to: ${binding.textSelectedTable?.text}")
 
@@ -111,6 +113,17 @@ class SalesFragment : BaseFragment<FragmentSalesBinding, SalesViewModel>() {
             }
             Timber.d("Navigating to CartFragment with tableId: $tableId, hasOrder: $hasOrder")
             mCoreNavigation.openSaleToCart(bundle)
+        }
+
+        sharedViewModel.selectedTableId.observe(viewLifecycleOwner) { selectedTableId ->
+            tableId = selectedTableId
+            binding.textSelectedTable?.text = tableId?.let {
+                "Bàn: $it"
+            } ?: "Chưa chọn bàn"
+            Timber.d("Selected tableId in SalesFragment: $tableId")
+            tableId?.let {
+                if (hasOrder) mViewModel.loadOrderInfo(tableId = it)
+            }
         }
     }
 

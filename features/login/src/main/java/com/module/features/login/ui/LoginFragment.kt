@@ -6,6 +6,7 @@ import android.view.WindowInsetsController
 import android.widget.Toast
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import com.module.core.navigation.CoreNavigation
 import com.module.core.ui.base.BaseFragment
 import com.module.domain.api.model.UserRole
 import com.module.features.login.R
@@ -18,7 +19,7 @@ import javax.inject.Inject
 class LoginFragment : BaseFragment<FragmentLoginBinding, LoginViewModel>() {
 
     @Inject
-    lateinit var mNavigation: LoginNavigation
+    lateinit var cNavigation: CoreNavigation
 
     @Inject
     lateinit var nNavigation: LoginNavigator
@@ -63,11 +64,13 @@ class LoginFragment : BaseFragment<FragmentLoginBinding, LoginViewModel>() {
         mViewModel.uiState.observe(viewLifecycleOwner) { state ->
             when (state) {
                 is LoginState.LoginSuccess -> {
-                    when (state.role) {
-                        UserRole.ADMIN -> mNavigation.openLoginToAdminHome()
-                        UserRole.STAFF -> mNavigation.openLoginToAdminHome()
-                        UserRole.CUSTOMER -> mNavigation.openLoginToUserHome()
-                    }
+                    Timber.tag("LoginFragment").d("Login success")
+                    cNavigation.openSplashFragment()
+//                    when (state.role) {
+////                        UserRole.ADMIN -> mNavigation.openLoginToAdminHome()
+////                        UserRole.STAFF -> mNavigation.openLoginToAdminHome()
+////                        UserRole.CUSTOMER -> mNavigation.openLoginToUserHome()
+//                    }
                 }
 
                 is LoginState.LoginFailed -> {

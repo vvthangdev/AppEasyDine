@@ -82,6 +82,14 @@ data class UpdateOrderRequest(
     @SerializedName("voucherCode") val voucherCode: String?,
 )
 
+// Trong file com.module.domain.api.model (thêm vào cùng file với các model khác)
+data class ReserveTableRequest(
+    @SerializedName("start_time") val startTime: String,
+    @SerializedName("people_assigned") val peopleAssigned: Int,
+    @SerializedName("items") val items: List<OrderItemRequest>? = null,
+    @SerializedName("status") val status: String? = "pending"
+)
+
 data class ConfirmOrderRequest(
     @SerializedName("order_id") val orderId: String
 )

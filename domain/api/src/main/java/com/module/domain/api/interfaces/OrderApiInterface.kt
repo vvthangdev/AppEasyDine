@@ -11,6 +11,10 @@ interface OrderApiInterface {
     @POST("orders/create-order")
     suspend fun createOrder(@Body request: CreateOrderRequest): BaseResponse<Any?>
 
+    // Trong file com.module.domain.api.interfaces.OrderApiInterface
+    @POST("orders/reserve-table")
+    suspend fun reserveTable(@Body request: ReserveTableRequest): BaseResponse<Any?>
+
     @GET("orders/order-info")
     suspend fun getOrderInfo(
         @Query("id") orderId: String?,

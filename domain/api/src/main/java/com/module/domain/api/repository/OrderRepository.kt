@@ -23,6 +23,7 @@ interface OrderRepository {
     suspend fun mergeOrder(request: MergeOrderRequest): Flow<Result<Unit>>
     suspend fun updateOrder(request: UpdateOrderRequest): Flow<Result<Unit>>
     suspend fun addItemsToOrder(request: AddItemsToOrderRequest): Flow<Result<Unit>>
+    suspend fun reserveTable(request: ReserveTableRequest): Flow<Result<Unit>>
 }
 
 @Singleton
@@ -57,6 +58,11 @@ class OrderRepositoryImpl @Inject constructor(
     override suspend fun getAllOrders() = safeApiCall("Fetching all orders") {
         orderApiInterface.getAllOrders()
     }
+
+    // Trong file com.module.domain.api.repository.OrderRepositoryImpl
+    override suspend fun reserveTable(request: ReserveTableRequest) = safeApiCall("Reserving table: $request") {
+        orderApiInterface.reserveTable(request)
+    }.mapSuccess { Unit } // Chuyển đổi Any? thành Unit
 
     override suspend fun createOrder(request: CreateOrderRequest) = safeApiCall("Creating order: $request") {
         orderApiInterface.createOrder(request)
