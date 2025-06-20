@@ -37,27 +37,60 @@
             android:id="@+id/sizeSpinner"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimen_16"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/itemImage" />
 
+        <LinearLayout
+            android:id="@+id/linearLayout"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimen_16"
+            android:orientation="horizontal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/sizeSpinner">
+
+            <Button
+                android:id="@+id/decreaseQuantityButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="-" />
+
+            <EditText
+                android:id="@+id/quantityEditText"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:hint="Số lượng"
+                android:inputType="number"
+                android:minEms="1"
+                android:text="1" />
+
+            <Button
+                android:id="@+id/increaseQuantityButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="+" />
+
+        </LinearLayout>
         <EditText
             android:id="@+id/noteEditText"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dimen_16"
             android:hint="Ghi chú (tuỳ chọn)"
             android:inputType="text"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/sizeSpinner" />
+            app:layout_constraintTop_toBottomOf="@+id/linearLayout" />
 
         <Button
             android:id="@+id/addToCartButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dimen_16"
-            android:text="Thêm vào giỏ hàng"
+            android:text="Cập nhật giỏ hàng"
             app:layout_constraintEnd_toStartOf="@+id/cancelButton"
             app:layout_constraintTop_toBottomOf="@+id/noteEditText" />
 
@@ -66,8 +99,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dimen_16"
+            android:layout_marginStart="@dimen/dimen_8"
             android:text="Hủy"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/noteEditText" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

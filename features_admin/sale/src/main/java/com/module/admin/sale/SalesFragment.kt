@@ -179,6 +179,11 @@ class SalesFragment : BaseFragment<FragmentSalesBinding, SalesViewModel>() {
                         Toast.makeText(requireContext(), it, Toast.LENGTH_LONG).show()
                     }
                 }
+                is CartState.ReservationSuccess -> {
+
+                }
+                is CartState.ReservationError -> {
+                }
             }
         }
     }

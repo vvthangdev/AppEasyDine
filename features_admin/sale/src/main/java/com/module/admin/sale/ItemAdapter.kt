@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.module.admin.sale.databinding.ItemCardBinding
+import com.module.domain.api.model.CartItem
 import com.module.domain.api.model.Item
 import timber.log.Timber
 
@@ -42,16 +43,16 @@ class ItemsAdapter(
 
             // Handle add to cart button
             binding.addItemToCartButton.setOnClickListener {
-//                if (item.sizes.isNullOrEmpty()) {
-//                    // No sizes, add directly to cart
-//                    Timber.d("Adding item ${item.name} to cart without size")
-//                    cartViewModel.addItemToCart(item, quantity = 1)
-//                } else {
-                    // Show dialog for size and note selection
-                    Timber.d("Showing selection dialog for ${item.name}")
-                    val dialog = ItemSelectionDialogFragment.newInstance(item)
-                    dialog.show(fragment.childFragmentManager, "ItemSelectionDialog")
-//                }
+                Timber.d("Showing selection dialog for ${item.name}")
+                // Create a temporary CartItem to pass to ItemSelectionDialogFragment
+                val tempCartItem = CartItem(
+                    item = item,
+                    quantity = 1, // Default quantity
+                    selectedSize = null,
+                    note = null
+                )
+                val dialog = ItemSelectionDialogFragment.newInstance(tempCartItem)
+                dialog.show(fragment.childFragmentManager, "ItemSelectionDialog")
             }
 
             // Handle details button

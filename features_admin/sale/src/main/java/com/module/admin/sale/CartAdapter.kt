@@ -1,9 +1,11 @@
 package com.module.admin.sale
 
+import android.content.Context
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -13,6 +15,7 @@ import com.module.domain.api.model.CartItem
 import timber.log.Timber
 
 class CartAdapter(
+    private val fragment: CartFragment, // Thêm tham số fragment
     private val viewModel: CartViewModel
 ) : ListAdapter<CartItem, CartAdapter.CartViewHolder>(CartItemDiffCallback()) {
 
@@ -31,12 +34,13 @@ class CartAdapter(
         fun bind(cartItem: CartItem) {
             currentCartItem = cartItem
             binding.cartItemName.text = cartItem.item.name
-            // Hiển thị giá theo size nếu có, nếu không thì dùng giá mặc định của item
             val price = cartItem.selectedSize?.price ?: cartItem.item.price
             binding.cartItemPrice.text = "${price} VNĐ"
             binding.cartItemQuantity.setText(cartItem.quantity.toString())
             binding.cartItemSize.text = cartItem.selectedSize?.name ?: "Default"
             binding.cartItemNote.text = cartItem.note ?: ""
+
+            Timber.d("Cart item quantity: ${cartItem.quantity}")
 
             // Load image using Glide
             Glide.with(binding.cartItemImage.context)
@@ -50,37 +54,66 @@ class CartAdapter(
             binding.increaseQuantityButton.setOnClickListener {
                 val newQuantity = cartItem.quantity + 1
                 viewModel.updateItemQuantity(cartItem.uniqueKey, newQuantity)
-                binding.cartItemQuantity.setText(newQuantity.toString())
             }
 
             binding.decreaseQuantityButton.setOnClickListener {
                 val newQuantity = cartItem.quantity - 1
-                viewModel.updateItemQuantity(cartItem.uniqueKey, newQuantity)
                 if (newQuantity > 0) {
-                    binding.cartItemQuantity.setText(newQuantity.toString())
+                    viewModel.updateItemQuantity(cartItem.uniqueKey, newQuantity)
                 }
             }
 
-            // Handle manual quantity input
-            binding.cartItemQuantity.addTextChangedListener(object : TextWatcher {
-                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
-                override fun afterTextChanged(s: Editable?) {
-                    val input = s.toString()
+            // Handle manual quantity input when EditText loses focus or user presses Done
+            binding.cartItemQuantity.setOnFocusChangeListener { _, hasFocus ->
+                if (!hasFocus) {
+                    val input = binding.cartItemQuantity.text.toString()
                     val quantity = input.toIntOrNull()
                     if (quantity != null && quantity >= 0 && quantity != cartItem.quantity) {
-                        Timber.d("Manually updating quantity for ${cartItem.item.name} to $quantity")
+                        Timber.d("Updating quantity for ${cartItem.item.name} to $quantity after losing focus")
                         viewModel.updateItemQuantity(cartItem.uniqueKey, quantity)
                     } else if (input.isBlank() || quantity == null) {
-                        // Reset to current quantity if input is invalid
+                        Timber.d("Invalid input for ${cartItem.item.name}, reverting to ${cartItem.quantity}")
                         binding.cartItemQuantity.setText(cartItem.quantity.toString())
+                        binding.cartItemQuantity.setSelection(cartItem.quantity.toString().length)
                     }
                 }
-            })
+            }
+
+            // Handle Done action on soft keyboard
+            binding.cartItemQuantity.setOnEditorActionListener { _, actionId, _ ->
+                if (actionId == android.view.inputmethod.EditorInfo.IME_ACTION_DONE ||
+                    actionId == android.view.inputmethod.EditorInfo.IME_ACTION_GO ||
+                    actionId == android.view.inputmethod.EditorInfo.IME_ACTION_NEXT
+                ) {
+                    val input = binding.cartItemQuantity.text.toString()
+                    val quantity = input.toIntOrNull()
+                    if (quantity != null && quantity >= 0 && quantity != cartItem.quantity) {
+                        Timber.d("Updating quantity for ${cartItem.item.name} to $quantity after Done action")
+                        viewModel.updateItemQuantity(cartItem.uniqueKey, quantity)
+                    } else if (input.isBlank() || quantity == null) {
+                        Timber.d("Invalid input for ${cartItem.item.name}, reverting to ${cartItem.quantity}")
+                        binding.cartItemQuantity.setText(cartItem.quantity.toString())
+                        binding.cartItemQuantity.setSelection(cartItem.quantity.toString().length)
+                    }
+                    // Hide soft keyboard
+                    val imm = binding.cartItemQuantity.context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                    imm.hideSoftInputFromWindow(binding.cartItemQuantity.windowToken, 0)
+                    true
+                } else {
+                    false
+                }
+            }
 
             // Handle remove item
             binding.removeItemButton.setOnClickListener {
                 viewModel.removeItemFromCart(cartItem.uniqueKey)
+            }
+
+            // Handle click on cart item image to open ItemSelectionDialogFragment
+            binding.cartItemImage.setOnClickListener {
+                Timber.d("Clicked on image for item: ${cartItem.item.name}")
+                val dialog = ItemSelectionDialogFragment.newInstance(cartItem)
+                dialog.show(fragment.childFragmentManager, "ItemSelectionDialogFragment")
             }
         }
     }
@@ -91,7 +124,11 @@ class CartAdapter(
         }
 
         override fun areContentsTheSame(oldItem: CartItem, newItem: CartItem): Boolean {
-            return oldItem == newItem
+            Timber.d("Comparing items: ${oldItem.quantity} and ${newItem.quantity}")
+            return oldItem.quantity == newItem.quantity &&
+                    oldItem.selectedSize == newItem.selectedSize &&
+                    oldItem.note == newItem.note &&
+                    oldItem.item == newItem.item
         }
     }
 }
