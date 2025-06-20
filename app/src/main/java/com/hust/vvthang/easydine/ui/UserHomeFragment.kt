@@ -36,7 +36,7 @@ class UserHomeFragment : BaseFragment<FragmentUserHomeBinding, UserHomeViewModel
         Timber.d("Initializing UserHomeFragment")
         setupViewPagerAndBottomNavigation()
         coreNavigation.bind(findNavController())
-        appNavigation.bind(findNavController())
+        // appNavigation.bind(findNavController())
     }
 
     private fun setupViewPagerAndBottomNavigation() {
@@ -70,13 +70,15 @@ class UserHomeFragment : BaseFragment<FragmentUserHomeBinding, UserHomeViewModel
         appNavigation.unbind()
     }
 
-    private class UserHomePagerAdapter(fragment: Fragment) : FragmentStateAdapter(fragment) {
+    private class UserHomePagerAdapter(private val fragment: Fragment) : FragmentStateAdapter(fragment) {
         override fun getItemCount(): Int = 3
 
         override fun createFragment(position: Int): Fragment {
             return when (position) {
                 0 -> SalesFragment()
-                1 -> CameraQrFragment()
+                1 -> CameraQrFragment().apply {
+                    viewPager = (fragment as UserHomeFragment).binding.userHomeViewPager
+                }
                 2 -> ProfileFragment()
                 else -> SalesFragment()
             }

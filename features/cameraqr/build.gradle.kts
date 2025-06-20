@@ -70,6 +70,8 @@ dependencies {
     implementation(project(":features:utils"))
     implementation (libs.timber.log)
 
+    implementation (libs.zxing.android.embedded)
+
     implementation(libs.hilt.android)
     implementation (libs.github.glide)
     kapt(libs.hilt.complier)

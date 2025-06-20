@@ -12,6 +12,8 @@ import com.hust.vvthang.easydine.databinding.ActivityMainBinding
 import com.hust.vvthang.easydine.navigation.AppNavigation
 import com.module.core.navigation.CoreNavigation
 import com.module.core.ui.base.BaseActivity
+import com.module.core.utils.extensions.constants.PreferenceKey
+import com.module.core.utils.extensions.shared_preferences.AppPreferences
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 import javax.inject.Inject
@@ -21,6 +23,9 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>() {
 
     override val layoutId: Int = R.layout.activity_main
     private val mViewModel: MainViewModel by viewModels()
+
+    @Inject
+    lateinit var appPreferences: AppPreferences
 
     @Inject
     lateinit var appNavigation: AppNavigation
@@ -35,6 +40,8 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         // Đăng ký listener ở đây
+
+        appPreferences.put(PreferenceKey.TABLE_ID, "")
         supportFragmentManager.setFragmentResultListener(
             "splash_result",
             this
@@ -72,4 +79,10 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>() {
         coreNavigation.bind(navHostFragment.navController) // Thêm dòng này
         Timber.tag("MainActivity").d("Navigation bound")
     }
+
+//    override fun onDestroy() {
+//
+//        super.onDestroy()
+//
+//    }
 }

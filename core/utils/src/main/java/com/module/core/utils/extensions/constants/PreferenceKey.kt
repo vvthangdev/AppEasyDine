@@ -14,4 +14,6 @@ object PreferenceKey {
     const val USER_PHONE = "user_phone"
     const val ACCESS_TOKEN = "access_token"
     const val REFRESH_TOKEN = "refresh_token"
+
+    const val TABLE_ID = "table_id" // Thêm key cho tableId
 }

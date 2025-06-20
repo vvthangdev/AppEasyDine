@@ -65,4 +65,9 @@ class AppPreferencesImpl @Inject constructor(
     override fun get(key: String, defaultValue: Boolean): Boolean {
         return mPrefs.getBoolean(key, defaultValue)
     }
+
+    override fun remove(key: String) {
+        mPrefs.edit().remove(key).apply()
+    }
+
 }

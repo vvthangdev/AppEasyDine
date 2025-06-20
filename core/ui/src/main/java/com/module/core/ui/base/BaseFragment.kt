@@ -11,7 +11,7 @@ import androidx.fragment.app.Fragment
 
 abstract class BaseFragment<BD : ViewDataBinding, VM : BaseViewModel> : Fragment() {
 
-    private var _binding: BD? = null
+    var _binding: BD? = null
 
     private lateinit var mViewModel: VM
 

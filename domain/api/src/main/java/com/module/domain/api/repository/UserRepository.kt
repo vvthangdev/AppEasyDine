@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import retrofit2.HttpException
-import android.util.Log
+import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -22,156 +22,80 @@ interface UserRepository {
     suspend fun updateUser(request: UpdateUserRequest): Flow<Result<Unit>>
     suspend fun deleteUser(request: DeleteUserRequest): Flow<Result<Unit>>
     suspend fun getUserInfo(): Flow<Result<User>>
+    suspend fun logout(): Flow<Result<Unit>>
 }
 
+@Singleton
 class UserRepositoryImpl @Inject constructor(
     private val userApiInterface: UserApiInterface
 ) : UserRepository {
 
-    override suspend fun signUp(request: SignUpRequest) = flow {
-        Log.d("UserRepository", "Signing up user: ${request.username}")
+    private suspend fun <T> safeApiCall(
+        logMessage: String,
+        apiCall: suspend () -> BaseResponse<T>
+    ): Flow<Result<T>> = flow {
+        Timber.d(logMessage)
         try {
             emit(Result.Loading)
-            val response: BaseResponse<SignUpResponse> = userApiInterface.signUp(request)
-            Log.d("UserRepository", "Received response: $response")
+            val response = apiCall()
+            Timber.d("Received response: $response")
             if (response.isSuccess()) {
                 emit(Result.Success(response.data))
             } else {
-                Log.e("UserRepository", "API error: ${response.message}")
+                Timber.e("API error: ${response.message}")
                 emit(Result.Error(Exception("API error: ${response.message}"), response.message))
             }
         } catch (e: HttpException) {
-            Log.e("UserRepository", "HTTP error: ${e.code()} - ${e.message}", e)
+            Timber.e(e, "HTTP error: ${e.code()} - ${e.message}")
             emit(Result.Error(e, "HTTP error: ${e.message}"))
         } catch (e: Exception) {
-            Log.e("UserRepository", "Unexpected error: ${e.message}", e)
+            Timber.e(e, "Unexpected error: ${e.message}")
             emit(Result.Error(e, e.message))
         }
     }.flowOn(Dispatchers.IO)
 
-    override suspend fun login(request: LoginRequest) = flow {
-        Log.d("UserRepository", "Logging in user: ${request.email}")
-        try {
-            emit(Result.Loading)
-            val response: BaseResponse<LoginResponse> = userApiInterface.login(request)
-            Log.d("UserRepository", "Received response: $response")
-            if (response.isSuccess()) {
-                emit(Result.Success(response.data))
-            } else {
-                Log.e("UserRepository", "API error: ${response.message}")
-                emit(Result.Error(Exception("API error: ${response.message}"), response.message))
-            }
-        } catch (e: HttpException) {
-            Log.e("UserRepository", "HTTP error: ${e.code()} - ${e.message}", e)
-            emit(Result.Error(e, "HTTP error: ${e.message}"))
-        } catch (e: Exception) {
-            Log.e("UserRepository", "Unexpected error: ${e.message}", e)
-            emit(Result.Error(e, e.message))
-        }
-    }.flowOn(Dispatchers.IO)
+    override suspend fun signUp(request: SignUpRequest) = safeApiCall("Signing up user: ${request.username}") {
+        userApiInterface.signUp(request)
+    }
 
-    override suspend fun getAllUsers() = flow {
-        Log.d("UserRepository", "Fetching all users")
-        try {
-            emit(Result.Loading)
-            val response: BaseResponse<List<User>> = userApiInterface.getAllUsers()
-            Log.d("UserRepository", "Received response: $response")
-            if (response.isSuccess()) {
-                emit(Result.Success(response.data))
-            } else {
-                Log.e("UserRepository", "API error: ${response.message}")
-                emit(Result.Error(Exception("API error: ${response.message}"), response.message))
-            }
-        } catch (e: HttpException) {
-            Log.e("UserRepository", "HTTP error: ${e.code()} - ${e.message}", e)
-            emit(Result.Error(e, "HTTP error: ${e.message}"))
-        } catch (e: Exception) {
-            Log.e("UserRepository", "Unexpected error: ${e.message}", e)
-            emit(Result.Error(e, e.message))
-        }
-    }.flowOn(Dispatchers.IO)
+    override suspend fun login(request: LoginRequest) = safeApiCall("Logging in user: ${request.email}") {
+        userApiInterface.login(request)
+    }
 
-    override suspend fun refreshToken(request: RefreshTokenRequest) = flow {
-        Log.d("UserRepository", "Refreshing token with refreshToken: ${request.refreshToken}")
-        try {
-            emit(Result.Loading)
-            val response: BaseResponse<RefreshTokenResponse> = userApiInterface.refreshToken(request)
-            Log.d("UserRepository", "Received response: $response")
-            if (response.isSuccess()) {
-                emit(Result.Success(response.data))
-            } else {
-                Log.e("UserRepository", "API error: ${response.message}")
-                emit(Result.Error(Exception("API error: ${response.message}"), response.message))
-            }
-        } catch (e: HttpException) {
-            Log.e("UserRepository", "HTTP error: ${e.code()} - ${e.message}", e)
-            emit(Result.Error(e, "HTTP error: ${e.message}"))
-        } catch (e: Exception) {
-            Log.e("UserRepository", "Unexpected error: ${e.message}", e)
-            emit(Result.Error(e, e.message))
-        }
-    }.flowOn(Dispatchers.IO)
+    override suspend fun getAllUsers() = safeApiCall("Fetching all users") {
+        userApiInterface.getAllUsers()
+    }
 
-    override suspend fun updateUser(request: UpdateUserRequest) = flow {
-        Log.d("UserRepository", "Updating user: $request")
-        try {
-            emit(Result.Loading)
-            val response: BaseResponse<Nothing?> = userApiInterface.updateUser(request)
-            Log.d("UserRepository", "Received response: $response")
-            if (response.isSuccess()) {
-                emit(Result.Success(Unit))
-            } else {
-                Log.e("UserRepository", "API error: ${response.message}")
-                emit(Result.Error(Exception("API error: ${response.message}"), response.message))
-            }
-        } catch (e: HttpException) {
-            Log.e("UserRepository", "HTTP error: ${e.code()} - ${e.message}", e)
-            emit(Result.Error(e, "HTTP error: ${e.message}"))
-        } catch (e: Exception) {
-            Log.e("UserRepository", "Unexpected error: ${e.message}", e)
-            emit(Result.Error(e, e.message))
-        }
-    }.flowOn(Dispatchers.IO)
+    override suspend fun refreshToken(request: RefreshTokenRequest) = safeApiCall("Refreshing token with refreshToken: ${request.refreshToken}") {
+        userApiInterface.refreshToken(request)
+    }
 
-    override suspend fun deleteUser(request: DeleteUserRequest) = flow {
-        Log.d("UserRepository", "Deleting user")
-        try {
-            emit(Result.Loading)
-            val response: BaseResponse<Nothing?> = userApiInterface.deleteUser(request)
-            Log.d("UserRepository", "Received response: $response")
-            if (response.isSuccess()) {
-                emit(Result.Success(Unit))
-            } else {
-                Log.e("UserRepository", "API error: ${response.message}")
-                emit(Result.Error(Exception("API error: ${response.message}"), response.message))
-            }
-        } catch (e: HttpException) {
-            Log.e("UserRepository", "HTTP error: ${e.code()} - ${e.message}", e)
-            emit(Result.Error(e, "HTTP error: ${e.message}"))
-        } catch (e: Exception) {
-            Log.e("UserRepository", "Unexpected error: ${e.message}", e)
-            emit(Result.Error(e, e.message))
-        }
-    }.flowOn(Dispatchers.IO)
+    override suspend fun updateUser(request: UpdateUserRequest) = safeApiCall("Updating user: $request") {
+        userApiInterface.updateUser(request)
+    }.mapSuccess { Unit }
 
-    override suspend fun getUserInfo() = flow {
-        Log.d("UserRepository", "Fetching user info")
-        try {
-            emit(Result.Loading)
-            val response: BaseResponse<User> = userApiInterface.getUserInfo()
-            Log.d("UserRepository", "Received response: $response")
-            if (response.isSuccess()) {
-                emit(Result.Success(response.data))
-            } else {
-                Log.e("UserRepository", "API error: ${response.message}")
-                emit(Result.Error(Exception("API error: ${response.message}"), response.message))
+    override suspend fun deleteUser(request: DeleteUserRequest) = safeApiCall("Deleting user") {
+        userApiInterface.deleteUser(request)
+    }.mapSuccess { Unit }
+
+    override suspend fun getUserInfo() = safeApiCall("Fetching user info") {
+        userApiInterface.getUserInfo()
+    }
+
+    override suspend fun logout() = safeApiCall("Logging out user") {
+        userApiInterface.logout()
+    }.mapSuccess { Unit }
+
+    private fun <T> Flow<Result<T>>.mapSuccess(transform: (T) -> Unit): Flow<Result<Unit>> = flow {
+        collect { result ->
+            when (result) {
+                is Result.Loading -> emit(Result.Loading)
+                is Result.Success -> {
+                    result.data?.let { transform(it) }
+                    emit(Result.Success(Unit))
+                }
+                is Result.Error -> emit(Result.Error(result.exception, result.message))
             }
-        } catch (e: HttpException) {
-            Log.e("UserRepository", "HTTP error: ${e.code()} - ${e.message}", e)
-            emit(Result.Error(e, "HTTP error: ${e.message}"))
-        } catch (e: Exception) {
-            Log.e("UserRepository", "Unexpected error: ${e.message}", e)
-            emit(Result.Error(e, e.message))
         }
     }.flowOn(Dispatchers.IO)
 }

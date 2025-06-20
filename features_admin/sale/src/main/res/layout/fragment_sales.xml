@@ -64,7 +64,7 @@
                 android:id="@+id/tableNumberText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Số bàn: 101"
+                android:text=""
                 android:textSize="16sp"
                 app:layout_constraintBottom_toBottomOf="@+id/backButton"
                 app:layout_constraintEnd_toStartOf="@+id/cartButton"

@@ -31,4 +31,12 @@ class CoreNavigationImpl @Inject constructor() : BaseNavigatorImpl(), CoreNaviga
     override fun openProfileToEditProfile(bundle: Bundle?) {
         goTo(R.id.action_adHomeFragment_to_editProfileFragment, bundle)
     }
+
+    override fun openSalesFragment(bundle: Bundle?) {
+        goTo(R.id.action_to_salesFragment, bundle)
+    }
+
+//    override fun openLoginScreen(bundle: Bundle?) {
+//        goTo(R.id.action_to_splashFragment, bundle)
+//    }
 }

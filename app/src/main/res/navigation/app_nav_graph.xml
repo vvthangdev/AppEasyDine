@@ -47,9 +47,7 @@
         android:label="fragment_ad_home"
         tools:layout="@layout/fragment_ad_home">
 
-        <action
-            android:id="@+id/action_adHomeFragment_to_editProfileFragment"
-            app:destination="@id/editProfileFragment" />
+
         <action
             android:id="@+id/action_adHomeFragment_to_cartFragment"
             app:destination="@id/cartFragment"
@@ -68,6 +66,7 @@
             app:destination="@id/loginFragment"
             app:popUpTo="@id/userHomeFragment"
             app:popUpToInclusive="true" />
+
     </fragment>
     <fragment
         android:id="@+id/editProfileFragment"
@@ -81,14 +80,26 @@
     <fragment
         android:id="@+id/salesFragment"
         android:name="com.module.admin.sale.SalesFragment"
-        android:label="SalesFragment" >
-        <action
-            android:id="@+id/action_salesFragment_to_cartFragment"
-            app:destination="@id/cartFragment" />
-    </fragment>
+        android:label="SalesFragment" />
 
     <action
         android:id="@+id/action_to_cartFragment"
         app:destination="@id/cartFragment" />
+    <fragment
+        android:id="@+id/cameraQrFragment"
+        android:name="com.module.features.cameraqr.CameraQrFragment"
+        android:label="CameraQrFragment" />
+
+    <action
+        android:id="@+id/action_to_cameraQrFragment"
+        app:destination="@id/cameraQrFragment" />
+
+    <action
+        android:id="@+id/action_to_salesFragment"
+        app:destination="@id/salesFragment" />
+
+    <action
+        android:id="@+id/action_adHomeFragment_to_editProfileFragment"
+        app:destination="@id/editProfileFragment" />
 
 </navigation>

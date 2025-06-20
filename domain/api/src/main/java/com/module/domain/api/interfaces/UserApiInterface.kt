@@ -11,6 +11,9 @@ interface UserApiInterface {
     @POST("users/login")
     suspend fun login(@Body request: LoginRequest): BaseResponse<LoginResponse>
 
+    @POST("users/logout")
+    suspend fun logout(): BaseResponse<Nothing?>
+
     @GET("users/all-users")
     suspend fun getAllUsers(): BaseResponse<List<User>>
 

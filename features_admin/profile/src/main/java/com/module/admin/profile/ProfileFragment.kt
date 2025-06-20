@@ -28,7 +28,6 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding, ProfileViewModel>()
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         Timber.d("Binding NavController for ProfileFragment")
-//        profileNavigator.bind(findNavController())
     }
 
     override fun initView() {
@@ -41,6 +40,11 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding, ProfileViewModel>()
                 Timber.e(e, "Navigation error")
                 Toast.makeText(requireContext(), "Không thể điều hướng đến màn hình chỉnh sửa", Toast.LENGTH_SHORT).show()
             }
+        }
+
+        binding.btnLogout.setOnClickListener {
+            Timber.d("Logout button clicked")
+            mViewModel.logout()
         }
     }
 
@@ -75,10 +79,23 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding, ProfileViewModel>()
                 mViewModel.clearErrorMessage()
             }
         }
+
+        mViewModel.logoutSuccess.observe(viewLifecycleOwner) { success ->
+            if (success) {
+                Timber.d("Logout successful, navigating to login screen")
+                try {
+//                    mCoreNavigation.openSplashFragment()
+                    requireActivity().finish()
+                } catch (e: IllegalArgumentException) {
+                    Timber.e(e, "Navigation error to login screen")
+                    Toast.makeText(requireContext(), "Không thể điều hướng đến màn hình đăng nhập", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
     }
 
     override fun onDestroyView() {
-        mCoreNavigation.unbind()
+//        mCoreNavigation.unbind()
         super.onDestroyView()
     }
 }

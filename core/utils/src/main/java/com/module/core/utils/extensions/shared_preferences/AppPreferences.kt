@@ -28,4 +28,7 @@ interface AppPreferences {
     fun put(key: String, value: Boolean)
 
     fun get(key: String, defaultValue: Boolean): Boolean
+
+    fun remove(key: String)
+
 }

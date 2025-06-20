@@ -7,5 +7,7 @@ interface CoreNavigation: BaseNavigator {
     fun openSplashFragment(bundle: Bundle? = null)
     fun openProfileToEditProfile(bundle: Bundle? = null)
     fun openSaleToCart(bundle: Bundle? = null)
+    fun openSalesFragment(bundle: Bundle? = null)
+//    fun openLoginScreen(bundle: Bundle? = null)
 //    fun openProfileToEditProfile(bundle: Bundle? = null)
 }
