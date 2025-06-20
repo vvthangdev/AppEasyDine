@@ -67,9 +67,9 @@ class LoginFragment : BaseFragment<FragmentLoginBinding, LoginViewModel>() {
                     Timber.tag("LoginFragment").d("Login success")
                     cNavigation.openSplashFragment()
 //                    when (state.role) {
-////                        UserRole.ADMIN -> mNavigation.openLoginToAdminHome()
-////                        UserRole.STAFF -> mNavigation.openLoginToAdminHome()
-////                        UserRole.CUSTOMER -> mNavigation.openLoginToUserHome()
+//                        UserRole.ADMIN -> cNavigation.openLoginToAdminHome()
+//                        UserRole.STAFF -> cNavigation.openLoginToAdminHome()
+//                        UserRole.CUSTOMER -> cNavigation.openLoginToUserHome()
 //                    }
                 }
 

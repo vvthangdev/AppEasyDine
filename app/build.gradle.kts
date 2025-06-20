@@ -92,6 +92,7 @@ dependencies {
 
     implementation(libs.hilt.android)
     implementation(project(":domain:api"))
+    implementation(project(":features:cameraqr"))
     kapt(libs.hilt.complier)
 
     implementation(libs.timber.log)

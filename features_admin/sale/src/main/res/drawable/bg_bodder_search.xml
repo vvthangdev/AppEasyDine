@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Lớp bóng đổ (chỉ ở dưới) -->
+    <item
+        android:bottom="5dp">
+        <shape>
+            <solid android:color="#10000000" /> <!-- Màu bóng mờ (đen với độ trong suốt thấp) -->
+            <corners android:radius="@dimen/dimen_16" />
+        </shape>
+    </item>
+    <!-- Lớp chính (hình dạng chính) -->
+    <item>
+        <shape>
+            <solid android:color="@color/apple_white" /> <!-- Màu nền -->
+            <corners android:radius="@dimen/dimen_16" /> <!-- Góc bo tròn -->
+        </shape>
+    </item>
+</layer-list>

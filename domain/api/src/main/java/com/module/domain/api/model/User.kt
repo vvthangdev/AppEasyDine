@@ -58,7 +58,7 @@ data class RefreshTokenRequest(
 )
 data class UpdateUserRequest(
     @SerializedName("name") val name: String?,
-    @SerializedName("bio") val bio: String?,
+    @SerializedName("address") val address: String?,
     @SerializedName("avatar") val avatar: String?
 )
 

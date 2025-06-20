@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/salesFragment"
+        android:icon="@drawable/sell_svgrepo_com"
+        android:title="@string/Sales" />
+
+    <item
+        android:id="@+id/cameraQRFragment"
+        android:icon="@drawable/group_1322"
+        android:title="@string/Scan_QR" />
+
+    <item
+        android:id="@+id/profileFragment"
+        android:icon="@drawable/profile_round_1342_svgrepo_com"
+        android:title="@string/Profile" />
+</menu>

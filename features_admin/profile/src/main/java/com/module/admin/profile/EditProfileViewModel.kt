@@ -63,7 +63,7 @@ class EditProfileViewModel @Inject constructor(
             _profileIsLoading.postValue(true)
             val request = UpdateUserRequest(
                 name = name?.takeIf { it.isNotBlank() },
-                bio = address?.takeIf { it.isNotBlank() }, // Sử dụng address làm bio theo UpdateUserRequest
+                address = address?.takeIf { it.isNotBlank() },
                 avatar = avatar?.takeIf { it.isNotBlank() }
             )
             userRepository.updateUser(request).collect { result ->

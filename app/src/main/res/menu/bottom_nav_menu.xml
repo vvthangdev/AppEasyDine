@@ -18,5 +18,5 @@
     <item
         android:id="@+id/profileFragment"
         android:icon="@drawable/profile_round_1342_svgrepo_com"
-        android:title="@string/notifications"/>
+        android:title="@string/Profile"/>
 </menu>

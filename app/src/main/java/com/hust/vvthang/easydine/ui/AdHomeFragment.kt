@@ -66,13 +66,10 @@ class AdHomeFragment : BaseFragment<FragmentAdHomeBinding, AdHomeViewModel>() {
         })
     }
 
-    fun gotoCart(bundle: Bundle) {
-        findNavController().navigate(R.id.action_adHomeFragment_to_cartFragment,bundle)
-    }
-
     override fun onDestroyView() {
         super.onDestroyView()
-        coreNavigation.unbind()
+//        coreNavigation.unbind()
+//        appNavigation.unbind()
     }
 
     private class HomePagerAdapter(private val fragment: Fragment) : FragmentStateAdapter(fragment) {

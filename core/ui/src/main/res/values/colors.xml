@@ -1,5 +1,57 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Apple Primary Colors -->
+    <color name="apple_primary_main">#0071E3</color>
+    <color name="apple_primary_light">#42A5F5</color>
+    <color name="apple_primary_dark">#004494</color>
+    <color name="apple_primary_50">#E3F2FD</color>
+    <color name="apple_primary_100">#BBDEFB</color>
+    <color name="apple_primary_200">#90CAF9</color>
+    <color name="apple_primary_300">#64B5F6</color>
+    <color name="apple_primary_400">#42A5F5</color>
+    <color name="apple_primary_500">#0071E3</color>
+    <color name="apple_primary_600">#1E88E5</color>
+    <color name="apple_primary_700">#1976D2</color>
+    <color name="apple_primary_800">#1565C0</color>
+    <color name="apple_primary_900">#0D47A1</color>
+
+    <!-- Apple Secondary Colors -->
+    <color name="apple_secondary_main">#34C759</color>
+    <color name="apple_secondary_light">#66BB6A</color>
+    <color name="apple_secondary_dark">#2E7D32</color>
+
+    <!-- Apple Status Colors -->
+    <color name="apple_success">#34C759</color>
+    <color name="apple_warning">#FF9500</color>
+    <color name="apple_error">#FF2D55</color>
+    <color name="apple_info">#5856D6</color>
+
+    <!-- Apple Neutral Colors -->
+    <color name="apple_neutral_50">#FAFAFA</color>
+    <color name="apple_neutral_100">#F5F5F5</color>
+    <color name="apple_neutral_200">#EEEEEE</color>
+    <color name="apple_neutral_300">#E0E0E0</color>
+    <color name="apple_neutral_400">#BDBDBD</color>
+    <color name="apple_neutral_500">#9E9E9E</color>
+    <color name="apple_neutral_600">#757575</color>
+    <color name="apple_neutral_700">#616161</color>
+    <color name="apple_neutral_800">#424242</color>
+    <color name="apple_neutral_900">#212121</color>
+
+    <!-- Apple Background Colors -->
+    <color name="apple_background_default">#F5F5F7</color>
+    <color name="apple_background_paper">#FFFFFF</color>
+    <color name="apple_background_light">#FAFAFA</color>
+
+    <!-- Apple Text Colors -->
+    <color name="apple_text_primary">#1D1D1F</color>
+    <color name="apple_text_secondary">#86868B</color>
+    <color name="apple_text_disabled">#C7C7CC</color>
+
+    <!-- Apple Common Colors -->
+    <color name="apple_white">#FFFFFF</color>
+    <color name="apple_black">#000000</color>
+
 
     <color name="color_white">#FFFFFF</color>
     <color name="color_black">#000000</color>
@@ -102,4 +154,6 @@
     <color name="content_onprimary">#FFFFFF</color>
     <color name="border_opaque">#FFFFFF</color>
     <color name="ffffff">#FFFFFF</color>
+
+
 </resources>

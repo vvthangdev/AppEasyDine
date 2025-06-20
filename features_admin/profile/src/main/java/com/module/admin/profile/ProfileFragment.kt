@@ -23,20 +23,12 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding, ProfileViewModel>()
     override fun getVM(): ProfileViewModel = mViewModel
 
     @Inject
-    lateinit var profileNavigator: ProfileNavigator
+    lateinit var mCoreNavigation: CoreNavigation
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         Timber.d("Binding NavController for ProfileFragment")
-        profileNavigator.bind(findNavController())
-    }
-
-    @Inject
-    lateinit var mCoreNavigation: CoreNavigation
-
-    fun setNavController(navController: NavController) {
-        mCoreNavigation.bind(navController)
-        Timber.d("SalesFragment: NavController bound")
+//        profileNavigator.bind(findNavController())
     }
 
     override fun initView() {
@@ -44,7 +36,7 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding, ProfileViewModel>()
         binding.btnEditProfile.setOnClickListener {
             Timber.d("Navigating to EditProfileFragment")
             try {
-                profileNavigator.openProfileToEditProfile()
+                mCoreNavigation.openProfileToEditProfile()
             } catch (e: IllegalArgumentException) {
                 Timber.e(e, "Navigation error")
                 Toast.makeText(requireContext(), "Không thể điều hướng đến màn hình chỉnh sửa", Toast.LENGTH_SHORT).show()
@@ -86,7 +78,7 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding, ProfileViewModel>()
     }
 
     override fun onDestroyView() {
-        profileNavigator.unbind()
+        mCoreNavigation.unbind()
         super.onDestroyView()
     }
 }

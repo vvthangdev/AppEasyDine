@@ -5,4 +5,6 @@
     <string name="Area">Khu vực</string>
     <string name="Staff">Nhân viên</string>
     <string name="notifications">Thông báo</string>
+    <string name="Scan_QR">Scan QR</string>
+    <string name="Profile">Cá nhân</string>
 </resources>

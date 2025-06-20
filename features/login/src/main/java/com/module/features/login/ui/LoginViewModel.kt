@@ -67,16 +67,16 @@ class LoginViewModel @Inject constructor(
     private fun saveUserInformation(result: Login.Response) {
         Log.d("LoginViewModel", "saveUserInformation: $result")
         // Lưu thông tin user vào SharedPreferences
-        appPreferences.put(PreferenceKey.USER_ID, result.id)
+        appPreferences.put(PreferenceKey.USER_ID, result._id)
         appPreferences.put(PreferenceKey.USER_NAME, result.name)
         appPreferences.put(PreferenceKey.USER_EMAIL, result.email)
         appPreferences.put(PreferenceKey.USER_USERNAME, result.username ?: "")
         appPreferences.put(PreferenceKey.USER_ROLE, result.role)
         appPreferences.put(PreferenceKey.USER_ADDRESS, result.address ?: "")
         appPreferences.put(PreferenceKey.USER_AVATAR, result.avatar ?: "")
-        appPreferences.put(PreferenceKey.USER_PHONE, result.phone)
-        appPreferences.put(PreferenceKey.ACCESS_TOKEN, result.accessToken)
-        appPreferences.put(PreferenceKey.REFRESH_TOKEN, result.refreshToken)
+        appPreferences.put(PreferenceKey.USER_PHONE, result.phone?: "")
+        appPreferences.put(PreferenceKey.ACCESS_TOKEN, result.accessToken?: "")
+        appPreferences.put(PreferenceKey.REFRESH_TOKEN, result.refreshToken?: "")
 
         Log.d("LoginViewModel", "saveUserInformation: ${appPreferences.get(PreferenceKey.USER_NAME, "")}")
     }
