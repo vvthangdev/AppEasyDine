@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.jetbrainsKotlinAndroid)
     id("kotlin-kapt")
     id("dagger.hilt.android.plugin")
+    alias(libs.plugins.googleGmsGoogleServices)
 }
 
 android {
@@ -61,6 +62,8 @@ android {
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
+
+        isCoreLibraryDesugaringEnabled = true
     }
 
     buildFeatures {
@@ -93,6 +96,10 @@ dependencies {
     implementation(libs.hilt.android)
     implementation(project(":domain:api"))
     implementation(project(":features:cameraqr"))
+    implementation(libs.firebase.auth)
+    implementation(libs.google.play.services.auth)
+    implementation(libs.firebase.auth)
+    implementation(libs.googleid)
     kapt(libs.hilt.complier)
 
     implementation(libs.timber.log)
@@ -100,7 +107,9 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
-    implementation ("androidx.core:core-splashscreen:1.0.1")
+//    một số dependency của Google Play Services yêu cầu bật Core Library Desugaring để chạy được trên Android cũ hơn
+    coreLibraryDesugaring(libs.desugar.jdk.libs)
+
 }
 
 kapt {

@@ -1,6 +1,7 @@
 <resources>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="default_web_client_id">355702919962-s6tu7uudq0r3i3tet3kojn5gu4bg6lq0.apps.googleusercontent.com</string>
     <string name="Sales">Bán hàng</string>
     <string name="Area">Khu vực</string>
     <string name="Staff">Nhân viên</string>

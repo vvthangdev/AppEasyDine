@@ -2,7 +2,7 @@ package com.module.domain.api.model
 
 class Login {
     data class Request(
-        val email: String, // Sử dụng email thay vì username nếu API yêu cầu
+        val email: String,
         val password: String
     )
 

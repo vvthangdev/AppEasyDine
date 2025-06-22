@@ -28,4 +28,7 @@ interface UserApiInterface {
 
     @GET("users/user-info")
     suspend fun getUserInfo(): BaseResponse<User>
+
+    @POST("users/auth/google/firebase")
+    suspend fun googleLogin(@Body request: GoogleLoginRequest): BaseResponse<LoginResponse>
 }

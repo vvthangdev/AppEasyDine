@@ -4,8 +4,12 @@ import android.os.Bundle
 import android.view.View
 import android.view.WindowInsetsController
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.gms.common.api.ApiException
 import com.module.core.navigation.CoreNavigation
 import com.module.core.ui.base.BaseFragment
 import com.module.domain.api.model.UserRole
@@ -33,14 +37,40 @@ class LoginFragment : BaseFragment<FragmentLoginBinding, LoginViewModel>() {
 
     private var isPasswordVisible = false
 
+    // Launcher cho Google Sign-In
+    private val googleSignInLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == android.app.Activity.RESULT_OK) {
+            val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
+            try {
+                val account = task.getResult(ApiException::class.java)
+                val idToken = account.idToken ?: throw Exception("No ID token")
+                mViewModel.googleLogin(idToken) // Gọi hàm Google Login trong ViewModel
+            } catch (e: Exception) {
+                Timber.e(e, "Google Sign-In failed")
+                Toast.makeText(requireContext(), "Google Sign-In failed: ${e.message}", Toast.LENGTH_SHORT).show()
+            }
+        } else {
+            Toast.makeText(requireContext(), "Google Sign-In cancelled", Toast.LENGTH_SHORT).show()
+        }
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        nNavigation.bind(findNavController()) // Sửa từ setNavController thành bind
+        nNavigation.bind(findNavController())
+        mViewModel.initGoogleSignIn(requireContext()) // Khởi tạo Google Sign-In
     }
 
     override fun initView() {
         super.initView()
         setupSignUpLink()
+        setupPasswordVisibilityToggle()
+
+        // Cấu hình nút Google Sign-In
+        binding.btnGoogleSignIn.setOnClickListener {
+            mViewModel.startGoogleSignIn(googleSignInLauncher)
+        }
+
+        // Cấu hình status bar
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
             val windowInsetsController = activity?.window?.insetsController
             windowInsetsController?.setSystemBarsAppearance(
@@ -54,9 +84,6 @@ class LoginFragment : BaseFragment<FragmentLoginBinding, LoginViewModel>() {
                 resources.getColor(com.module.core.ui.R.color.color_FF7622, null)
             activity?.window?.decorView?.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
         }
-
-        setupPasswordVisibilityToggle()
-
     }
 
     override fun observeViewModel() {
@@ -66,13 +93,7 @@ class LoginFragment : BaseFragment<FragmentLoginBinding, LoginViewModel>() {
                 is LoginState.LoginSuccess -> {
                     Timber.tag("LoginFragment").d("Login success")
                     cNavigation.openSplashFragment()
-//                    when (state.role) {
-//                        UserRole.ADMIN -> cNavigation.openLoginToAdminHome()
-//                        UserRole.STAFF -> cNavigation.openLoginToAdminHome()
-//                        UserRole.CUSTOMER -> cNavigation.openLoginToUserHome()
-//                    }
                 }
-
                 is LoginState.LoginFailed -> {
                     Toast.makeText(
                         requireContext(),
@@ -91,9 +112,7 @@ class LoginFragment : BaseFragment<FragmentLoginBinding, LoginViewModel>() {
     }
 
     private fun setupPasswordVisibilityToggle() {
-        // Lưu trữ typeface ban đầu từ style đã được áp dụng
         val originalTypeface = binding.etPassword.typeface
-
         binding.ibPasswordVisibility.setOnClickListener {
             isPasswordVisible = !isPasswordVisible
             if (isPasswordVisible) {
@@ -105,8 +124,6 @@ class LoginFragment : BaseFragment<FragmentLoginBinding, LoginViewModel>() {
                     android.text.InputType.TYPE_CLASS_TEXT or android.text.InputType.TYPE_TEXT_VARIATION_PASSWORD
                 binding.ibPasswordVisibility.isSelected = false
             }
-
-            // Khôi phục typeface sau khi thay đổi inputType
             binding.etPassword.typeface = originalTypeface
             binding.etPassword.setSelection(binding.etPassword.text?.length ?: 0)
         }

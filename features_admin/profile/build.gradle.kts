@@ -71,6 +71,9 @@ dependencies {
 
     implementation(libs.hilt.android)
     implementation (libs.github.glide)
+    implementation(libs.google.play.services.auth)
+    implementation(libs.google.firebase.auth.ktx)
+
     kapt(libs.hilt.complier)
 
     testImplementation(libs.junit)

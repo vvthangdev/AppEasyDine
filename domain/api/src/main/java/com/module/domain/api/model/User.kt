@@ -20,18 +20,18 @@ data class LoginRequest(
 )
 
 data class LoginResponse(
-    @SerializedName("id") val id: String,
-    @SerializedName("name") val name: String,
-    @SerializedName("role") val role: String,
-    @SerializedName("address") val address: String,
-    @SerializedName("avatar") val avatar: String,
-    @SerializedName("email") val email: String,
-    @SerializedName("username") val username: String,
-    @SerializedName("phone") val phone: String,
-    @SerializedName("googleId") val googleId: String?,
+    @SerializedName("id") val id: String? = "",
+    @SerializedName("name") val name: String? = "",
+    @SerializedName("role") val role: String? = "",
+    @SerializedName("address") val address: String ? = "",
+    @SerializedName("avatar") val avatar: String? = "",
+    @SerializedName("email") val email: String? = "",
+    @SerializedName("username") val username: String? = "",
+    @SerializedName("phone") val phone: String? = "",
+    @SerializedName("googleId") val googleId: String? = "",
     @SerializedName("isActive") val isActive: Boolean,
-    @SerializedName("accessToken") val accessToken: String,
-    @SerializedName("refreshToken") val refreshToken: String
+    @SerializedName("accessToken") val accessToken: String? = "",
+    @SerializedName("refreshToken") val refreshToken: String? = ""
 )
 
 data class User(
@@ -65,6 +65,11 @@ data class UpdateUserRequest(
 data class DeleteUserRequest(
     @SerializedName("password") val password: String
 )
+
+data class GoogleLoginRequest(
+    @SerializedName("idToken") val idToken: String // Google ID token từ Firebase
+)
+
 
 enum class UserRole {
     ADMIN,

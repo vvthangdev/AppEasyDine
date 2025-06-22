@@ -82,7 +82,7 @@
                     style="@style/text_16"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Email"
+                    android:text="@string/email"
                     android:textColor="@color/text_icon_default"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -213,17 +213,15 @@
                     android:layout_height="wrap_content"
                     android:text="Or"
                     android:textColor="@color/text_icon_tertiary"
-                    app:layout_constraintBottom_toTopOf="@+id/ib_google_login"
+                    app:layout_constraintBottom_toTopOf="@+id/btn_google_sign_in"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent" />
 
-                <ImageButton
-                    android:id="@+id/ib_google_login"
-                    android:layout_width="@dimen/dimen_48"
-                    android:layout_height="@dimen/dimen_48"
-                    android:background="@null"
-                    android:contentDescription="Google"
-                    android:scaleType="centerCrop"
+                <com.google.android.gms.common.SignInButton
+                    android:id="@+id/btn_google_sign_in"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"

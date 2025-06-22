@@ -1,8 +1,9 @@
 [versions]
-agp = "7.4.2"
+agp = "8.8.0"
+desugar_jdk_libs = "2.1.5"
 glideVersion = "4.16.0"
 kotlin = "1.9.0"
-coreKtx = "1.13.1"
+coreKtx = "1.12.0"
 junit = "4.13.2"
 junitVersion = "1.2.1"
 espressoCore = "3.6.1"
@@ -20,9 +21,16 @@ interceptor = "4.12.0"
 room = "2.6.1"
 splash = "1.0.1"
 zxingAndroidEmbedded = "4.3.0"
+googleGmsGoogleServices = "4.3.15"
+firebaseAuth = "22.2.0"
+googlePlayServicesAuth = "21.2.0"
+playServicesBase = "18.7.0"
+firebaseAuthKtxVersion = "22.2.0"
+googleid = "1.1.1"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+desugar_jdk_libs = { module = "com.android.tools:desugar_jdk_libs", version.ref = "desugar_jdk_libs" }
 github-glide = { module = "com.github.bumptech.glide:glide", version.ref = "glideVersion" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
@@ -46,10 +54,16 @@ room-paging = { group = "androidx.room", name = "room-paging", version.ref = "ro
 room-complier = { group = "androidx.room", name = "room-complier", version.ref = "room" }
 core-splash = { group = "androidx.core", name = "core-splashscreen", version.ref = "splash" }
 zxing-android-embedded = { module = "com.journeyapps:zxing-android-embedded", version.ref = "zxingAndroidEmbedded" }
+google-play-services-auth = { group = "com.google.android.gms", name = "play-services-auth", version.ref = "googlePlayServicesAuth" }
+firebase-auth = { group = "com.google.firebase", name = "firebase-auth", version.ref = "firebaseAuth" }
+play-services-base = { group = "com.google.android.gms", name = "play-services-base", version.ref = "playServicesBase" }
+google-firebase-auth-ktx = { group = "com.google.firebase", name = "firebase-auth-ktx", version.ref = "firebaseAuthKtxVersion" }
+googleid = { group = "com.google.android.libraries.identity.googleid", name = "googleid", version.ref = "googleid" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
 jetbrainsKotlinAndroid = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 androidLibrary = { id = "com.android.library", version.ref = "agp" }
 hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
+googleGmsGoogleServices = { id = "com.google.gms.google-services", version.ref = "googleGmsGoogleServices" }
 

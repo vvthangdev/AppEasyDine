@@ -23,6 +23,7 @@ interface UserRepository {
     suspend fun deleteUser(request: DeleteUserRequest): Flow<Result<Unit>>
     suspend fun getUserInfo(): Flow<Result<User>>
     suspend fun logout(): Flow<Result<Unit>>
+    suspend fun googleLogin(request: GoogleLoginRequest): Flow<Result<LoginResponse>>
 }
 
 @Singleton
@@ -85,6 +86,10 @@ class UserRepositoryImpl @Inject constructor(
     override suspend fun logout() = safeApiCall("Logging out user") {
         userApiInterface.logout()
     }.mapSuccess { Unit }
+
+    override suspend fun googleLogin(request: GoogleLoginRequest) = safeApiCall("Logging in with Google: ${request.idToken.take(10)}...") {
+        userApiInterface.googleLogin(request)
+    }
 
     private fun <T> Flow<Result<T>>.mapSuccess(transform: (T) -> Unit): Flow<Result<Unit>> = flow {
         collect { result ->

@@ -71,6 +71,10 @@ dependencies {
     implementation(libs.timber.log)
 
     implementation(libs.hilt.android)
+    implementation(libs.play.services.base)
+    implementation(libs.google.play.services.auth)
+    implementation(libs.google.firebase.auth.ktx)
+    implementation(libs.googleid)
     kapt(libs.hilt.complier)
 
     testImplementation(libs.junit)

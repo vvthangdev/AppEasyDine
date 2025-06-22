@@ -2,4 +2,5 @@
 <resources>
     <string name="title_login">Đăng nhập</string>
     <string name="msg_welcome_to_easydine">Chào mừng bạn đến với Easy Dine</string>
+
 </resources>

@@ -3,6 +3,8 @@ package com.module.admin.profile
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
+import com.google.firebase.auth.FirebaseAuth
 import com.module.core.network.model.Result
 import com.module.core.ui.base.BaseViewModel
 import com.module.core.utils.extensions.constants.PreferenceKey
@@ -17,7 +19,8 @@ import javax.inject.Inject
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
     private val userRepository: UserRepository,
-    private val appPreferences: AppPreferences
+    private val appPreferences: AppPreferences,
+    private val googleSignInClient: GoogleSignInClient
 ) : BaseViewModel() {
 
     private val _userInfo = MutableLiveData<User?>()
@@ -36,7 +39,7 @@ class ProfileViewModel @Inject constructor(
         loadUserInfo()
     }
 
-    fun loadUserInfo() {
+    private fun loadUserInfo() {
         viewModelScope.launch {
             _profileIsLoading.postValue(true)
             userRepository.getUserInfo().collect { result ->
@@ -70,9 +73,11 @@ class ProfileViewModel @Inject constructor(
                         _profileIsLoading.postValue(true)
                     }
                     is Result.Success -> {
-                        _profileIsLoading.postValue(false)
-                        // Xóa thông tin người dùng trong AppPreferences
+                        FirebaseAuth.getInstance().signOut()
+                        googleSignInClient.signOut()
+                        FirebaseAuth.getInstance().signOut()
                         clearUserPreferences()
+                        _profileIsLoading.postValue(false)
                         _logoutSuccess.postValue(true)
                         Timber.d("Logout successful, user preferences cleared")
                     }

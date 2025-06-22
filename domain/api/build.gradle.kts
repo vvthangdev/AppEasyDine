@@ -35,7 +35,8 @@ android {
     productFlavors {
         create("dev") {
             dimension = "env"
-            buildConfigField("String", "API_URL", "\"https://hust-cv-student-20215643.id.vn/\"")
+//            buildConfigField("String", "API_URL", "\"https://hust-cv-student-20215643.id.vn/\"")
+            buildConfigField("String", "API_URL", "\"https://622c-2001-ee0-1ac2-6b4e-9db0-dca1-4336-b957.ngrok-free.app/\"")
         }
 
         create("staging") {
