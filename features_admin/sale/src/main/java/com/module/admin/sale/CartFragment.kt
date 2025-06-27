@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.module.admin.sale.databinding.FragmentCartBinding
 import com.module.core.navigation.CoreNavigation
 import com.module.core.ui.base.BaseFragment
+import com.module.core.utils.extensions.sharedviewmodel.ShareViewModel
 import com.module.domain.api.model.CartItem
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
@@ -27,6 +28,8 @@ class CartFragment : BaseFragment<FragmentCartBinding, CartViewModel>() {
         get() = R.layout.fragment_cart
 
     private val mViewModel: CartViewModel by activityViewModels()
+    private val sharedViewModel: ShareViewModel by activityViewModels()
+
     @Inject
     lateinit var mCoreNavigation: CoreNavigation
 
@@ -42,7 +45,7 @@ class CartFragment : BaseFragment<FragmentCartBinding, CartViewModel>() {
 
     private fun setupViews() {
         // Setup recycler view
-        cartAdapter = CartAdapter(this, mViewModel) // Truyền CartFragment vào
+        cartAdapter = CartAdapter(this, mViewModel)
         binding.cartItemsRecyclerView.apply {
             layoutManager = LinearLayoutManager(context)
             adapter = cartAdapter
@@ -65,7 +68,24 @@ class CartFragment : BaseFragment<FragmentCartBinding, CartViewModel>() {
                 Toast.makeText(context, "Giỏ hàng trống, vui lòng thêm món!", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
-            showReservationDialog()
+
+            // Kiểm tra tableId từ ShareViewModel
+            val tableId = sharedViewModel.selectedTableId.value
+            if (tableId != null) {
+                // Nếu có tableId, gọi createOrder với thời gian mặc định
+                val calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
+                val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+                val timeFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
+                val startTime = dateFormat.format(calendar.time) + "T" + timeFormat.format(calendar.time) + "Z"
+                // Giả sử endTime là 2 giờ sau startTime
+                calendar.add(Calendar.HOUR, 2)
+                val endTime = dateFormat.format(calendar.time) + "T" + timeFormat.format(calendar.time) + "Z"
+                mViewModel.createOrder(tableId, startTime, endTime, sharedViewModel)
+                Timber.d("Creating order with tableId: $tableId, startTime: $startTime, endTime: $endTime")
+            } else {
+                // Nếu không có tableId, hiển thị dialog chọn thời gian
+                showReservationDialog()
+            }
         }
     }
 
@@ -127,11 +147,11 @@ class CartFragment : BaseFragment<FragmentCartBinding, CartViewModel>() {
                 // Format startTime in UTC
                 val utcCalendar = Calendar.getInstance(TimeZone.getTimeZone("UTC")).apply {
                     timeInMillis = selectedDateTime
-                    add(Calendar.HOUR, -7) // Add 7 hours to convert to UTC
+                    add(Calendar.HOUR, -7) // Chuyển đổi múi giờ
                 }
                 val startTime = dateFormat.format(utcCalendar.time) + "T" + timeFormat.format(utcCalendar.time) + "Z"
                 val peopleAssigned = peopleSpinner.selectedItem.toString().toInt()
-                mViewModel.reserveTable(startTime, peopleAssigned)
+                mViewModel.reserveTable(startTime, peopleAssigned, sharedViewModel)
             }
             .setNegativeButton("Hủy", null)
             .show()
@@ -145,20 +165,19 @@ class CartFragment : BaseFragment<FragmentCartBinding, CartViewModel>() {
                         cartAdapter.submitList(state.cartItems)
                         Timber.d("Cart updated with ${state.cartItems.size} items: ${state.cartItems}")
                     }
-//                    binding.cartItemsRecyclerView.adapter?.notifyDataSetChanged()
-                    Timber.d("Cart updated with vvt01 ${state.cartItems} items")
                     binding.cartItemsRecyclerView.visibility = if (state.cartItems.isEmpty()) View.GONE else View.VISIBLE
                     binding.emptyCartMessage.visibility = if (state.cartItems.isEmpty()) View.VISIBLE else View.GONE
                     binding.totalPriceTextView.text = "Tổng tiền: ${state.totalPrice} VNĐ"
                 }
                 is CartState.Error -> {
+                    Toast.makeText(context, "Lỗi: ${state.exception?.message}", Toast.LENGTH_SHORT).show()
                 }
                 is CartState.ReservationSuccess -> {
-                    Toast.makeText(context, "Đặt bàn thành công!", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, "Tạo đơn hàng thành công!", Toast.LENGTH_SHORT).show()
                     mViewModel.clearCart()
                 }
                 is CartState.ReservationError -> {
-                    Toast.makeText(context, "Lỗi đặt bàn: ${state.message}", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, "Lỗi tạo đơn hàng: ${state.message}", Toast.LENGTH_SHORT).show()
                 }
             }
         }

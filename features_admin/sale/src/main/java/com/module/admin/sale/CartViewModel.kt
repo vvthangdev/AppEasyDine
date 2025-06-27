@@ -1,8 +1,13 @@
 package com.module.admin.sale
 
 import androidx.lifecycle.MutableLiveData
+import com.module.core.network.model.Result
 import com.module.core.ui.base.BaseViewModel
+import com.module.core.utils.extensions.constants.PreferenceKey
+import com.module.core.utils.extensions.shared_preferences.AppPreferences
+import com.module.core.utils.extensions.sharedviewmodel.ShareViewModel
 import com.module.domain.api.model.CartItem
+import com.module.domain.api.model.CreateOrderRequest
 import com.module.domain.api.model.Item
 import com.module.domain.api.model.OrderItemRequest
 import com.module.domain.api.model.ReserveTableRequest
@@ -18,15 +23,24 @@ import javax.inject.Inject
 sealed class CartState {
     data class CartUpdated(val cartItems: List<CartItem>, val totalPrice: Long) : CartState()
     data class Error(val exception: Throwable?) : CartState()
-    object ReservationSuccess : CartState()
+    data object ReservationSuccess : CartState()
     data class ReservationError(val message: String?) : CartState()
 }
 
 @HiltViewModel
-class CartViewModel @Inject constructor(private val orderRepository: OrderRepository) : BaseViewModel() {
+class CartViewModel @Inject constructor(
+    private val orderRepository: OrderRepository,
+    private val appPreferences: AppPreferences,
+//    private val shareViewModel: ShareViewModel khong inject duoc viewmodel khac vao day
+) : BaseViewModel() {
 
     val cartState = MutableLiveData<CartState>()
     val cartItems = mutableListOf<CartItem>()
+    val role = appPreferences.get(PreferenceKey.USER_ROLE, "")
+
+    init {
+        Timber.d("CartViewModel initialized with role: $role")
+    }
 
     fun addItemToCart(item: Item, quantity: Int = 1, selectedSize: Size? = null, note: String? = null) {
         val uniqueKey = "${item.id}_${selectedSize?.name ?: "no_size"}"
@@ -43,7 +57,7 @@ class CartViewModel @Inject constructor(private val orderRepository: OrderReposi
             newCartItems.add(CartItem(item, quantity, selectedSize, note))
             Timber.d("Added new item: ${item.name}, quantity: $quantity, size: ${selectedSize?.name}")
         } else {
-            Timber.d("Increased quantity for $item.name")
+            Timber.d("Increased quantity for ${item.name}")
         }
 
         cartItems.clear()
@@ -51,7 +65,6 @@ class CartViewModel @Inject constructor(private val orderRepository: OrderReposi
 
         updateCartState()
     }
-
 
     fun removeItemFromCart(uniqueKey: String) {
         cartItems.removeAll { it.uniqueKey == uniqueKey }
@@ -85,7 +98,6 @@ class CartViewModel @Inject constructor(private val orderRepository: OrderReposi
         updateCartState()
     }
 
-
     fun clearCart() {
         cartItems.clear()
         Timber.d("Cleared cart")
@@ -117,11 +129,10 @@ class CartViewModel @Inject constructor(private val orderRepository: OrderReposi
 
         cartItems.clear()
         cartItems.addAll(newCartItems)
-
         updateCartState()
     }
 
-    fun reserveTable(startTime: String, peopleAssigned: Int) {
+    fun reserveTable(startTime: String, peopleAssigned: Int, shareViewModel: ShareViewModel) {
         val items = cartItems.map { cartItem ->
             OrderItemRequest(
                 id = cartItem.item.id,
@@ -134,19 +145,21 @@ class CartViewModel @Inject constructor(private val orderRepository: OrderReposi
             startTime = startTime,
             peopleAssigned = peopleAssigned,
             items = items,
-            status = "pending"
+            status = if (role == "CUSTOMER") "pending" else "confirmed",
         )
 
         CoroutineScope(Dispatchers.Main).launch {
             orderRepository.reserveTable(request).collect { result ->
                 when (result) {
-                    is com.module.core.network.model.Result.Success -> {
+                    is Result.Success -> {
                         cartState.postValue(CartState.ReservationSuccess)
+                        shareViewModel.setSelectedTableId(null) // Đặt tableId về null
+//                        Timber.d("Cleared tableId in ShareViewModel after successful reservation")
                     }
-                    is com.module.core.network.model.Result.Error -> {
+                    is Result.Error -> {
                         cartState.postValue(CartState.ReservationError(result.message))
                     }
-                    is com.module.core.network.model.Result.Loading -> {
+                    is Result.Loading -> {
                         // Do nothing
                     }
                 }
@@ -154,4 +167,43 @@ class CartViewModel @Inject constructor(private val orderRepository: OrderReposi
         }
     }
 
+    fun createOrder(tableId: String, startTime: String, endTime: String, shareViewModel: ShareViewModel) {
+        val items = cartItems.map { cartItem ->
+            OrderItemRequest(
+                id = cartItem.item.id,
+                quantity = cartItem.quantity,
+                size = cartItem.selectedSize?.name,
+                note = cartItem.note
+            )
+        }
+
+        val request = CreateOrderRequest(
+            startTime = startTime,
+            endTime = endTime,
+            type = "reservation",
+            status = if (role == "CUSTOMER") "pending" else "confirmed",
+            tables = listOf(tableId),
+            items = items
+        )
+
+        CoroutineScope(Dispatchers.Main).launch {
+            orderRepository.createOrder(request).collect { result ->
+                when (result) {
+                    is Result.Success -> {
+                        cartState.postValue(CartState.ReservationSuccess)
+                        shareViewModel.setSelectedTableId(null) // Đặt tableId về null
+//                        Timber.d("Cleared tableId in ShareViewModel after successful reservation")
+                    }
+
+                    is Result.Error -> {
+                        cartState.postValue(CartState.ReservationError(result.message))
+                    }
+
+                    is Result.Loading -> {
+
+                    }
+                }
+            }
+        }
+    }
 }

@@ -17,11 +17,9 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.module.admin.sale.databinding.FragmentSalesBinding
 import com.module.core.navigation.CoreNavigation
 import com.module.core.ui.base.BaseFragment
-import com.module.core.utils.extensions.constants.PreferenceKey
 import com.module.core.utils.extensions.shared_preferences.AppPreferences
+import com.module.core.utils.extensions.sharedviewmodel.ShareViewModel
 import com.module.domain.api.model.Category
-import com.module.domain.api.model.Item
-import com.module.features.utils.AreaSaleViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -36,7 +34,7 @@ class SalesFragment : BaseFragment<FragmentSalesBinding, SalesViewModel>() {
 
     private val mViewModel: SalesViewModel by viewModels()
     private val mCartViewModel: CartViewModel by activityViewModels()
-    private val sharedViewModel: AreaSaleViewModel by activityViewModels()
+    private val sharedViewModel: ShareViewModel by activityViewModels()
 
     @Inject
     lateinit var mCoreNavigation: CoreNavigation
@@ -55,8 +53,8 @@ class SalesFragment : BaseFragment<FragmentSalesBinding, SalesViewModel>() {
         sharedViewModel.selectedTableId.observe(viewLifecycleOwner) { tableId ->
             Timber.d("Received Table ID: $tableId")
             if (tableId != null && tableId.isNotEmpty()) {
-                binding.tableNumberText.text = tableId
-                Toast.makeText(context, "Đang xử lý cho bàn ID: $tableId", Toast.LENGTH_SHORT).show()
+//                binding.tableNumberText.text = tableId
+//                Toast.makeText(context, "Đang xử lý cho bàn ID: $tableId", Toast.LENGTH_SHORT).show()
             } else {
                 binding.tableNumberText.text = "Chưa chọn bàn"
             }

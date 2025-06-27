@@ -13,10 +13,8 @@ import com.journeyapps.barcodescanner.BarcodeCallback
 import com.journeyapps.barcodescanner.BarcodeResult
 import com.module.core.navigation.CoreNavigation
 import com.module.core.ui.base.BaseFragment
-import com.module.features.cameraqr.CameraQrViewModel
-import com.module.features.cameraqr.R
+import com.module.core.utils.extensions.sharedviewmodel.ShareViewModel
 import com.module.features.cameraqr.databinding.FragmentCameraQrBinding
-import com.module.features.utils.AreaSaleViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 import javax.inject.Inject
@@ -28,7 +26,7 @@ class CameraQrFragment : BaseFragment<FragmentCameraQrBinding, CameraQrViewModel
         get() = R.layout.fragment_camera_qr
 
     private val mViewModel: CameraQrViewModel by viewModels()
-    private val sharedViewModel: AreaSaleViewModel by activityViewModels()
+    private val sharedViewModel: ShareViewModel by activityViewModels()
 
     @Inject
     lateinit var mCoreNavigation: CoreNavigation
@@ -46,33 +44,7 @@ class CameraQrFragment : BaseFragment<FragmentCameraQrBinding, CameraQrViewModel
 
     override fun initView() {
         super.initView()
-
-        binding.button.setOnClickListener {
-            val tableId = mViewModel.qrCodeContent.value
-            if (tableId != null) {
-                // Lưu tableId vào AreaSaleViewModel
-                sharedViewModel.setSelectedTableId(tableId)
-                Timber.d("Button clicked, saved Table ID: $tableId to AreaSaleViewModel")
-                // Chuyển về SalesFragment (tab 0)
-                if (viewPager != null) {
-                    viewPager!!.currentItem = 0
-                } else {
-                    Timber.e("ViewPager is null, cannot switch to SalesFragment")
-                }
-                Toast.makeText(
-                    requireContext(),
-                    "Chuyển đến menu với bàn ID: $tableId",
-                    Toast.LENGTH_SHORT
-                ).show()
-            } else {
-                Toast.makeText(
-                    requireContext(),
-                    "Vui lòng quét mã QR trước khi tiếp tục",
-                    Toast.LENGTH_SHORT
-                ).show()
-                Timber.e("No Table ID found in ViewModel")
-            }
-        }
+        // Bỏ phần xử lý click button
     }
 
     private fun checkCameraPermission() {
@@ -127,6 +99,12 @@ class CameraQrFragment : BaseFragment<FragmentCameraQrBinding, CameraQrViewModel
                             Timber.d("Table ID detected: $tableId")
                             mViewModel.setQrCodeContent(tableId)
                             binding.barcodeScanner.pause()
+                            // Lưu tableId và chuyển tab tự động
+                            sharedViewModel.setSelectedTableId(tableId)
+                            viewPager?.let {
+                                it.currentItem = 0
+                                Timber.d("Auto switched to SalesFragment with Table ID: $tableId")
+                            } ?: Timber.e("ViewPager is null, cannot switch to SalesFragment")
                         } ?: run {
                             Timber.w("Binding is null, cannot pause barcode scanner")
                         }
