@@ -117,3 +117,10 @@ data class AddItemsToOrderRequest(
     @SerializedName("order_id") val orderId: String,
     @SerializedName("items") val items: List<OrderItemRequest>
 )
+
+data class UserOrderResponse(
+    @SerializedName("_id") val id: String,
+    @SerializedName("time") val time: String,
+    @SerializedName("status") val status: String,
+    @SerializedName("final_amount") val finalAmount: Long
+)

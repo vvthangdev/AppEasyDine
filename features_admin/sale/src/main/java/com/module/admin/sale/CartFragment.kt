@@ -69,24 +69,24 @@ class CartFragment : BaseFragment<FragmentCartBinding, CartViewModel>() {
                 return@setOnClickListener
             }
 
-            // Kiểm tra tableId từ ShareViewModel
             val tableId = sharedViewModel.selectedTableId.value
             if (tableId != null) {
-                // Nếu có tableId, gọi createOrder với thời gian mặc định
                 val calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"))
-                val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-                val timeFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
-                val startTime = dateFormat.format(calendar.time) + "T" + timeFormat.format(calendar.time) + "Z"
-                // Giả sử endTime là 2 giờ sau startTime
+
+                val dateTimeFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm'Z'", Locale.getDefault())
+                dateTimeFormat.timeZone = TimeZone.getTimeZone("UTC")
+
+                val startTime = dateTimeFormat.format(calendar.time)
                 calendar.add(Calendar.HOUR, 2)
-                val endTime = dateFormat.format(calendar.time) + "T" + timeFormat.format(calendar.time) + "Z"
+                val endTime = dateTimeFormat.format(calendar.time)
+
                 mViewModel.createOrder(tableId, startTime, endTime, sharedViewModel)
                 Timber.d("Creating order with tableId: $tableId, startTime: $startTime, endTime: $endTime")
             } else {
-                // Nếu không có tableId, hiển thị dialog chọn thời gian
                 showReservationDialog()
             }
         }
+
     }
 
     private fun showReservationDialog() {

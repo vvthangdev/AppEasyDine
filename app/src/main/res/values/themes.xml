@@ -1,9 +1,9 @@
 <resources>
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.Material3.DayNight.NoActionBar">
-        <item name="android:statusBarColor">@color/color_FF7622</item>
-        <item name="colorPrimary">@color/color_FF7622</item>
-        <item name="colorAccent">@color/color_FF7622</item>
+        <item name="android:statusBarColor">@color/apple_blue</item>
+        <item name="colorPrimary">@color/apple_blue</item>
+        <item name="colorAccent">@color/apple_blue</item>
         <!-- Optionally, set the light/dark status bar icons based on the color -->
         <item name="android:windowLightStatusBar">true</item> <!-- Light status bar icons -->
 

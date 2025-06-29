@@ -35,4 +35,7 @@ interface OrderApiInterface {
 
     @POST("orders/add-items-to-order")
     suspend fun addItemsToOrder(@Body request: AddItemsToOrderRequest): BaseResponse<Any?>
+
+    @GET("orders/my-orders")
+    suspend fun getMyOrders(): BaseResponse<List<UserOrderResponse>>
 }

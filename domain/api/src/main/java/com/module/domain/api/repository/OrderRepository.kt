@@ -8,6 +8,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
+import org.json.JSONObject
 import retrofit2.HttpException
 import timber.log.Timber
 import javax.inject.Inject
@@ -24,6 +25,7 @@ interface OrderRepository {
     suspend fun updateOrder(request: UpdateOrderRequest): Flow<Result<Unit>>
     suspend fun addItemsToOrder(request: AddItemsToOrderRequest): Flow<Result<Unit>>
     suspend fun reserveTable(request: ReserveTableRequest): Flow<Result<Unit>>
+    suspend fun getMyOrders(): Flow<Result<List<UserOrderResponse>>>
 }
 
 @Singleton
@@ -48,7 +50,17 @@ class OrderRepositoryImpl @Inject constructor(
             }
         } catch (e: HttpException) {
             Timber.e(e, "HTTP error: ${e.code()} - ${e.message}")
-            emit(Result.Error(e, "HTTP error: ${e.message}"))
+            // Lấy body của lỗi từ response
+            val errorBody = e.response()?.errorBody()?.string()
+            val errorMessage = try {
+                // Phân tích JSON để lấy message
+                val jsonObject = JSONObject(errorBody ?: "{}")
+                jsonObject.getString("message") ?: "HTTP error: ${e.message}"
+            } catch (jsonException: Exception) {
+                // Nếu không phân tích được JSON, dùng thông báo mặc định
+                "HTTP error: ${e.message}"
+            }
+            emit(Result.Error(e, errorMessage))
         } catch (e: Exception) {
             Timber.e(e, "Unexpected error: ${e.message}")
             emit(Result.Error(e, e.message))
@@ -122,6 +134,10 @@ class OrderRepositoryImpl @Inject constructor(
     override suspend fun addItemsToOrder(request: AddItemsToOrderRequest) = safeApiCall("Adding items to order: $request") {
         orderApiInterface.addItemsToOrder(request)
     }.mapSuccess { Unit } // Chuyển đổi Any? thành Unit
+
+    override suspend fun getMyOrders() = safeApiCall("Fetching my orders") {
+        orderApiInterface.getMyOrders()
+    }
 
     // Hàm hỗ trợ để chuyển đổi Result.Success<T> thành Result.Success<Unit>
     private fun <T> Flow<Result<T>>.mapSuccess(transform: (T) -> Unit): Flow<Result<Unit>> = flow {
