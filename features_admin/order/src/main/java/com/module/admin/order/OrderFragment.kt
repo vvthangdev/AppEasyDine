@@ -33,7 +33,9 @@ class OrderFragment : BaseFragment<FragmentOrderBinding, OrderViewModel>() {
     }
 
     private fun setupRecyclerView() {
-        orderAdapter = OrderAdapter()
+        orderAdapter = OrderAdapter { orderId ->
+            mViewModel.fetchOrderInfo(orderId)
+        }
         binding.orderRecyclerView.apply {
             layoutManager = LinearLayoutManager(context)
             adapter = orderAdapter
@@ -67,10 +69,26 @@ class OrderFragment : BaseFragment<FragmentOrderBinding, OrderViewModel>() {
                 }
             }
         }
-    }
 
-    fun setNavController(navController: NavController) {
-        mCoreNavigation.bind(navController)
-        Timber.d("OrderFragment: NavController bound")
+        mViewModel.orderInfoState.observe(viewLifecycleOwner) { state ->
+            when (state) {
+                is OrderInfoState.Loading -> {
+                    Timber.d("OrderFragment: Loading order info")
+                    // Có thể thêm loading indicator nếu cần
+                }
+                is OrderInfoState.Success -> {
+                    Timber.d("OrderFragment: Showing order info")
+                    // Kiểm tra xem dialog đã tồn tại chưa
+                    if (childFragmentManager.findFragmentByTag("OrderInfoDialog") == null) {
+                        val dialog = OrderInfoDialogFragment.newInstance(state.orderInfo)
+                        dialog.show(childFragmentManager, "OrderInfoDialog")
+                    }
+                }
+                is OrderInfoState.Error -> {
+                    Timber.e("OrderFragment: Error loading order info - ${state.message}")
+                    Toast.makeText(context, state.message ?: "Lỗi khi tải chi tiết đơn hàng", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
     }
 }

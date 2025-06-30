@@ -1,48 +1,176 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/reservationDialogLayout"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:padding="16dp">
+    android:layout_margin="16dp"
+    app:cardCornerRadius="20dp"
+    app:cardElevation="8dp"
+    android:backgroundTint="@color/apple_white">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Số người:"
-        android:textSize="16sp" />
-
-    <Spinner
-        android:id="@+id/peopleSpinner"
+    <LinearLayout
+        android:id="@+id/reservationDialogLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp" />
+        android:orientation="vertical"
+        android:background="@drawable/bg_dialog_apple">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="Ngày đặt:"
-        android:textSize="16sp" />
+        <!-- Header with Gradient -->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:background="@drawable/bg_header_gradient_apple">
 
-    <Button
-        android:id="@+id/dateButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text="Chọn ngày" />
+            <ImageView
+                android:id="@+id/reservationIcon"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:src="@drawable/ic_calendar"
+                android:tint="@color/white"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_marginStart="24dp" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="Giờ đặt:"
-        android:textSize="16sp" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Đặt bàn"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:textColor="@color/apple_white"
+                android:layout_marginStart="16dp"
+                app:layout_constraintStart_toEndOf="@id/reservationIcon"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent" />
 
-    <Button
-        android:id="@+id/timeButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text="Chọn giờ" />
-</LinearLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <!-- Form Content -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="24dp">
+
+            <!-- People Count Section -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="SỐ NGƯỜI"
+                android:textSize="12sp"
+                android:textColor="@color/apple_text_secondary"
+
+                android:textStyle="bold"
+                android:layout_marginBottom="8dp" />
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="2dp"
+                android:layout_marginBottom="24dp">
+
+                <Spinner
+                    android:id="@+id/peopleSpinner"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:background="@drawable/bg_spinner_apple"
+                    android:paddingHorizontal="16dp" />
+
+            </androidx.cardview.widget.CardView>
+
+            <!-- Date Section -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="NGÀY ĐẶT"
+                android:textSize="12sp"
+                android:textColor="@color/apple_text_secondary"
+
+                android:textStyle="bold"
+                android:layout_marginBottom="8dp" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/dateButton"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:text="Chọn ngày"
+                android:textSize="16sp"
+                android:textColor="@color/apple_text_primary"
+
+                android:background="@drawable/bg_button_secondary_apple"
+                app:backgroundTint="@null"
+                app:cornerRadius="12dp"
+                app:icon="@drawable/ic_calendar"
+                app:iconTint="@color/apple_blue"
+                app:iconGravity="start"
+                android:layout_marginBottom="24dp" />
+
+            <!-- Time Section -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="GIỜ ĐẶT"
+                android:textSize="12sp"
+                android:textColor="@color/apple_text_secondary"
+
+                android:textStyle="bold"
+                android:layout_marginBottom="8dp" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/timeButton"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:text="Chọn giờ"
+                android:textSize="16sp"
+                android:textColor="@color/apple_text_primary"
+
+                android:background="@drawable/bg_button_secondary_apple"
+                app:backgroundTint="@null"
+                app:cornerRadius="12dp"
+                app:icon="@drawable/ic_clock"
+                app:iconTint="@color/apple_blue"
+                app:iconGravity="start"
+                android:layout_marginBottom="32dp" />
+
+            <!-- Action Buttons -->
+<!--            <LinearLayout-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:orientation="horizontal"-->
+<!--                android:gravity="end">-->
+
+<!--                <Button-->
+<!--                    android:id="@+id/cancelButton"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="48dp"-->
+<!--                    android:text="Hủy"-->
+<!--                    android:textSize="16sp"-->
+<!--                    android:textColor="@color/apple_text_secondary"-->
+
+<!--                    android:background="@drawable/bg_text_button_apple"-->
+<!--                    app:backgroundTint="@null"-->
+<!--                    app:cornerRadius="24dp"-->
+<!--                    android:layout_marginEnd="12dp" />-->
+
+<!--                <Button-->
+<!--                    android:id="@+id/confirmButton"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="48dp"-->
+<!--                    android:text="Xác nhận"-->
+<!--                    android:textSize="16sp"-->
+<!--                    android:textStyle="bold"-->
+<!--                    android:textColor="@color/apple_white"-->
+<!--                    android:paddingHorizontal="24dp"-->
+<!--                    android:background="@drawable/bg_button_primary_apple"-->
+<!--                    app:backgroundTint="@null"-->
+<!--                    app:cornerRadius="24dp" />-->
+
+<!--            </LinearLayout>-->
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>

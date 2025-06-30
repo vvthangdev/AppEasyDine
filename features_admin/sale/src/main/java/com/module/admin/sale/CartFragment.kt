@@ -141,7 +141,7 @@ class CartFragment : BaseFragment<FragmentCartBinding, CartViewModel>() {
 
         // Show dialog
         AlertDialog.Builder(requireContext())
-            .setTitle("Đặt bàn")
+//            .setTitle("Đặt bàn")
             .setView(dialogView)
             .setPositiveButton("Xác nhận") { _, _ ->
                 // Format startTime in UTC
